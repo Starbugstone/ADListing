@@ -1,0 +1,100 @@
+.navbar {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.spinner>img{
+  margin-top: 100px;
+  background-image: url("../img/logoAS.png");
+}
+#userTable{
+  margin-top: 30px;
+}
+
+#tableComptes_filter{
+  padding-bottom: 4px;
+}
+
+table {
+  border-collapse: collapse;
+  margin:0 auto;
+  width: 85%;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th{
+  background-color:#ccffcc;
+  text-align: center;
+}
+
+td{
+	text-align:center;
+	padding-top: 6px;
+	padding-bottom: 3px;
+}
+
+table tr:nth-child(even){
+	background-color:#f3e6ff;
+}
+
+.panel-body>p{
+  border-bottom: thin solid #ddd;
+  padding-bottom: 3px;
+  text-align: left;
+}
+.panelIcons>p{
+  padding-bottom: 9px;
+  padding-top: 9px;
+}
+.panelIcons .clipBtn{
+  float: right;
+  margin-top: -9px;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 45px;
+}
+
+.colaboList>li{
+  text-align: left;
+}
+
+.sorting_desc, .sorting_asc, .sorting{
+  cursor: pointer;
+  cursor: hand;
+}
+
+.sorting_desc::after{
+  font-family: 'Glyphicons Halflings';
+  content:"\00a0 \e093";
+  font-size: 10px;
+}
+
+.sorting_asc::after{
+  font-family: 'Glyphicons Halflings';
+  content:"\00a0 \e094";
+  font-size: 10px;
+}
+
+/*------------------*/
+@media(min-width:992px){
+  .equal {
+    margin-top: 30px;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+  }
+
+  .equal div[class*='col-'] {
+    flex:1 1 auto;
+    display: flex;
+  }
+  .equal .panel {
+    flex:1 0 100%;
+
+  }
+}

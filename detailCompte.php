@@ -1,0 +1,231 @@
+<?php
+include 'php/config.php';
+include 'php/functions.php';
+// connect
+$ldapconn = ldap_connect($ldapserver) or die("Could not connect to LDAP server.");
+
+if($ldapconn) {
+  // Adding options
+  ldap_set_option ($ldapconn, LDAP_OPT_REFERRALS, 0);
+  ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+  // binding to ldap server
+  $ldapbind = ldap_bind($ldapconn, $ldapuser, $ldappass) or die ("Error trying to bind: ".ldap_error($ldapconn));
+  // verify binding
+  if ($ldapbind) {
+
+    //recupere variable passé dans URL
+    //on fait un choix de filtre en fonction de ceux qu'on passe comme paramettre. Le resultat est toujours un seul utilisateurs car ces données doivent etre uniques dans AD
+    if (isset($_GET['dn'])){
+      $dn=$_GET['dn'];
+      $filter = "(&(objectCategory=person)(distinguishedname=$dn))";
+    }elseif (isset($_GET['id'])){
+      $id=$_GET['id'];
+      //filter on ID
+      $filter = "(&(objectCategory=person)(sAMAccountName=$id))";
+    }elseif (isset($_GET['dispName'])){
+      $dispName = $_GET['dispName'];
+      $filter = "(&(objectCategory=person)(displayname=$dispName))";
+    }
+    else{
+      echo("<h1>erreur de filtre</h1>");
+    }
+
+    //Getting results
+    $result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
+    $data = ldap_get_entries($ldapconn, $result);
+
+    //grab all our required info
+    //1st pannel
+    $displayName = getOr($data[0]['displayname'][0], "Aucun Nom");
+    $samaccountname = getOr($data[0]['samaccountname'][0], "Aucun nom de compte");
+    $nom = getOr($data[0]['sn'][0], "Aucun nom de famille");
+    $prenom = getOr($data[0]['givenname'][0], "Aucun Prenom");
+    $nomPrenom = getOr($data[0]['sn'][0],"")." ".getOr($data[0]['givenname'][0],"");
+    $mail = getOr($data[0]['mail'][0],"Aucun mail");
+    $Matricule = getOr($data[0]["employeeid"][0],"");
+    $description = getOr($data[0]["description"][0],"Pas de description");
+    $RPPS = getOr($data[0]["rpps"][0],"");
+    if ($data[0]["useraccountcontrol"][0]==514){
+      debugToConsole("compte desactivé");
+      $accountState = "<p><span class='glyphicon glyphicon-warning-sign'></span>Compte Desactive</p>";
+    }else{
+      $accountState = "";
+    }
+
+    //2nd pannel
+    $userGroupError = "Aucun groupe";
+    if (isset($data[0]['memberof'])){
+      $userGroup = $data[0]['memberof'];
+      array_shift($userGroup);
+    }else{
+      $userGroup = $userGroupError;
+    }
+
+    //3rd pannel
+    if (isset($data[0]['manager'][0])){
+      $manager = explodeCN($data[0]['manager'][0]);
+      $managerDn = $data[0]['manager'][0];
+      $manager = "<a href='detailCompte.php?dn=".$managerDn."'>".$manager."</a>";
+    }
+    else{
+      $manager = "Aucun Gestionnaire";
+    }
+    $directReportsError = "Aucun Colaborateur";
+    if (isset($data[0]['directreports'])){
+      $directReports = $data[0]['directreports'];
+      array_shift($directReports);
+    }else{
+      $directReports = $directReportsError;
+    }
+    $title = getOr($data[0]['title'][0],"Aucun Titre");
+    $department = getOr($data[0]['department'][0],"Aucun Service");
+    $company = getOr($data[0]['company'][0],"Aucun Societe");
+    $telephone = getOr($data[0]['telephonenumber'][0],"Aucun Telephone");
+    $office = getOr($data[0]['physicaldeliveryofficename'][0],"Aucun Bureau");
+
+
+
+  } else {
+    echo "LDAP bind failed...";
+    //$data=null;
+  }
+}
+ ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<title>Compte - <?php echo($nomPrenom); ?></title>
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<?php include 'navBar.php'; ?>
+
+<div class="container-fluid text-center">
+  <div class="row content equal">
+
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+        <h3 class="panel-title"><?php echo($nomPrenom); ?></h3>
+        </div>
+        <div class="panel-body panelIcons">
+          <?php echo $accountState; ?>
+          <p><b>Login&nbsp;:</b> <span id='login'><?php echo($samaccountname); ?></span><button class='btn clipBtn' data-clipboard-target='#login' title="Copier Login"><span class="glyphicon glyphicon-copy"></span></button></p>
+          <p><b>Nom&nbsp;:</b> <span id='Nom'><?php echo($nom); ?></span><button class='btn clipBtn' data-clipboard-target='#Nom' title="Copier Nom"><span class="glyphicon glyphicon-copy"></span></button></p>
+          <p><b>Prenom&nbsp;:</b> <span id='Prenom'><?php echo($prenom); ?></span><button class='btn clipBtn' data-clipboard-target='#Prenom' title="Copier Prenom"><span class="glyphicon glyphicon-copy"></span></button></p>
+          <p><b>Nom&#8209;Prenom&nbsp;:</b> <span id='NomPrenom'><?php echo($nomPrenom); ?></span><button class='btn clipBtn' data-clipboard-target='#NomPrenom' title="Copier Nom-Prenom"><span class="glyphicon glyphicon-copy"></span></button></p>
+          <p><b>Mail&nbsp;:</b> <span id='mail'><?php echo($mail); ?></span><button class='btn clipBtn' data-clipboard-target='#mail' title="Copier Mail"><span class="glyphicon glyphicon-copy"></span></button></p>
+          <p><b>Matricule&nbsp;:</b> <span id='Matricule'><?php echo($Matricule); ?></span><button class='btn clipBtn' data-clipboard-target='#Matricule' title="Copier Matricule"><span class="glyphicon glyphicon-copy"></span></button></p>
+          <?php
+          if ($RPPS != ""){
+          echo("<p><b>RPPS&nbsp;:</b> <span id='RPPS'>".$RPPS."</span><button class='btn clipBtn' data-clipboard-target='#RPPS' title='Copier RPPS'><span class='glyphicon glyphicon-copy'></span></button></p>");
+          }
+          ?>
+          <p><b>Description&nbsp;:</b> <span id='description'><?php echo($description); ?></span><button class='btn clipBtn' data-clipboard-target='#description' title="Copier description"><span class="glyphicon glyphicon-copy"></span></button></p>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+        <h3 class="panel-title">Groupes&nbsp;<?php if($userGroup!=$userGroupError){echo("(".count($userGroup).")");} ?></h3>
+        </div>
+        <div class="panel-body">
+
+            <?php
+            //debugToConsole($userGroup);
+            if($userGroup!=$userGroupError){
+              foreach( $userGroup as $grp) {
+                debugToConsole($grp);
+                //Get rid of all the excess CN and OU
+                echo ("<p><a href='detailGroupe.php?dn=".$grp."'>".explodeCN($grp) . "</a></p>");
+              }
+            }else{
+              echo("<p>".$userGroupError."</p>");
+            }
+            ?>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+        <h3 class="panel-title">Organisation</h3>
+        </div>
+        <div class="panel-body">
+          <p><b>Fonction&nbsp;:</b> <?php echo($title); ?></p>
+          <p><b>Service&nbsp;:</b> <?php echo($department); ?></p>
+          <p><b>Bureau&nbsp;:</b> <?php echo($office); ?></p>
+          <p><b>Telephone&nbsp;:</b> <?php echo($telephone); ?></p>
+          <p><b>Societe&nbsp;:</b> <?php echo($company); ?></p>
+          <p><b>Gestionnaire&nbsp;:</b> <?php echo($manager); ?></p>
+
+
+          <?php
+          //debugToConsole($userGroup);
+          if($directReports!=$directReportsError){
+            echo("<p><b>Colaborateurs&nbsp;:</b></p><ul class='colaboList'>");
+            foreach( $directReports as $colabo) {
+              //debugToConsole($colabo);
+              //Get rid of all the excess CN and OU
+              $colaboName = explodeCN($colabo);
+              echo ("<li><a href='detailCompte.php?dn=".$colabo."'>".$colaboName."</a></li>");
+            }
+            echo("</ul>");
+          }
+          ?>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery-2.2.4.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<script src="js/clipboard.min.js"></script>
+
+<script src="js/script.js"></script>
+<script>
+
+var clipboard = new Clipboard('.clipBtn');
+
+
+clipboard.on('success', function(e) {
+    //console.info('Action:', e.action);
+    //console.info('Text:', e.text);
+    //console.info('Trigger:', e.trigger);
+
+    //clear the selected text. Looks ugly
+    e.clearSelection();
+});
+/*
+clipboard.on('error', function(e) {
+    console.error('Action:', e.action);
+    console.error('Trigger:', e.trigger);
+});
+*/
+</script>
+</body>
+</html>

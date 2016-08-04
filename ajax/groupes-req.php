@@ -1,0 +1,111 @@
+<?php
+include '../php/config.php';
+include '../php/functions.php';
+
+
+$filter = "(&(objectCategory=group)(samaccountname=*))";
+
+// connect
+$ldapconn = ldap_connect($ldapserver) or die("Could not connect to LDAP server.");
+
+if($ldapconn) {
+    // Adding options
+	ldap_set_option ($ldapconn, LDAP_OPT_REFERRALS, 0);
+	ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+	// binding to ldap server
+    $ldapbind = ldap_bind($ldapconn, $ldapuser, $ldappass) or die ("Error trying to bind: ".ldap_error($ldapconn));
+    // verify binding
+    if ($ldapbind) {
+
+		$pageSize = 100; //pagesize and cookie for pagination to enable return of more than 100 results
+        $cookie = '';
+
+
+		$adlist=array(); //initialise array
+		do{
+			ldap_control_paged_result($ldapconn, $pageSize, true, $cookie); //initialise pagination based on cookie
+
+			$result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
+			$data = ldap_get_entries($ldapconn, $result);
+
+			for ($i=0; $i<$data["count"]; $i++) {
+				if(blacklistedDistinguishedname($data[$i]["distinguishedname"][0]) == FALSE){
+					array_push($adlist,array(
+						"sam"=>$data[$i]["samaccountname"][0],
+						"cn"=>$data[$i]["cn"][0],
+						"number"=>getOr($data[$i]["member"]['count'],"0"),
+						"mail"=>getOr($data[$i]["mail"][0],""),
+						"managedby"=>getOr($data[$i]["managedby"][0],"")
+					));
+				}
+			}
+
+			ldap_control_paged_result_response($ldapconn, $result, $cookie);
+
+		}while($cookie !== null && $cookie != '');
+
+
+		//need to find a way to sort alpha
+
+		 function sortBySam($a, $b) {
+		   return strcmp($a['sam'], $b['sam']);
+		 }
+		 usort($adlist, 'sortBySam');
+
+		 echo("
+		 <table id='tableGroupes' class='display'>
+			 <thead>
+				 <tr>
+					 <th>Groupe</th>
+ 					 <th>Membres</th>
+					 <th>Mail</th>
+					 <th>Gestionnaire</th>
+				 </tr>
+			 </thead>
+			 <tbody>
+		 ");
+
+		 for ($row = 0; $row < count($adlist); $row++) {
+
+			 echo("<tr>");
+
+			 echo("<td><a href='detailGroupe.php?id=".$adlist[$row]['sam']."'>".$adlist[$row]['cn']."</a></td>");
+			 echo("<td>".$adlist[$row]['number']."</td>");
+			 echo("<td>".$adlist[$row]['mail']."</td>");
+			 if ($adlist[$row]['managedby'] != ""){
+			 	echo("<td><a href='detailCompte.php?dn=".$adlist[$row]['managedby']."'>".explodeCN($adlist[$row]['managedby'])."</a></td>");
+			 }
+			 else {
+				 echo ("<td></td>");
+			 }
+
+			 echo("</tr>");
+		 }
+		 echo("</tbody></table>");
+
+		/*echo("<ul>");
+
+		for ($row = 0; $row < count($adlist); $row++) {
+			echo("<li>sam : ".$adlist[$row]['sam']." number : ".$adlist[$row]['number']."</li>");
+			echo("<li>_cn : ".$adlist[$row]['cn']." number : ".$adlist[$row]['number']."</li>");
+			echo("<li>-</li>");
+		}
+
+		echo("</ul>");*/
+
+
+    } else {
+        echo "LDAP bind failed...";
+    }
+
+}
+
+// all done? clean up
+ldap_close($ldapconn);
+
+function extractCN($dn){
+	$result = split("[=,]", utf8_encode($dn));
+	return utf8_decode($result[1]);
+}
+
+ ?>
