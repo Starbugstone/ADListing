@@ -26,7 +26,7 @@
   <div class="row content">
     <div class="col-xs-12">
       <div id="userTable">
-        <div class="spinner" id="loading1"><img src="img/ripple-198.svg" alt="Loading"></div>
+        <?php include 'ajax/loading.php'; ?>
       </div>
 
     </div>
