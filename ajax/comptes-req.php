@@ -42,8 +42,9 @@ if($ldapconn) {
             "cn"=>$data[$i]["cn"][0],
   					"mail"=>getOr($data[$i]["mail"][0],"-"),
   					"employeeid"=>getOr($data[$i]["employeeid"][0],"-"),
-  					"rpps"=>getOr($data[$i]["rpps"][0],"-"),
-  					"sam"=>$data[$i]["samaccountname"][0]
+  					//"rpps"=>getOr($data[$i]["rpps"][0],"-"),
+  					"sam"=>$data[$i]["samaccountname"][0],
+						"title"=>getOr($data[$i]["title"][0],"-")
   				));
         }
 				//echo($data[$i]["samaccountname"][0]);
@@ -66,8 +67,8 @@ if($ldapconn) {
 				<tr>
 					<th>Utilisateur</th>
 					<th>Mail</th>
+					<th>Fonction</th>
 					<th>ID Salari&eacute;</th>
-					<th>RPPS</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -79,8 +80,8 @@ if($ldapconn) {
     echo("
     <td><a href='detailCompte.php?id=".$adlist[$row]['sam']."'>".$adlist[$row]['cn']."</a></td>
     <td>".$adlist[$row]['mail']."</td>
-    <td>".$adlist[$row]['employeeid']."</td>
-    <td>".$adlist[$row]['rpps']."</td>"
+		<td>".$adlist[$row]['title']."</td>
+    <td>".$adlist[$row]['employeeid']."</td>"
     );
 
 			echo("</tr>");
