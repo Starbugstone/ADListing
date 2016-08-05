@@ -51,8 +51,6 @@ $(document).ready(function() {
       },
       paging: false
     });
-    //$("#loading1").hide();
-    //alert( "Load was performed." );
   });
 });
 

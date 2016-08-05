@@ -25,37 +25,24 @@ if($ldapconn) {
 		do {
 			ldap_control_paged_result($ldapconn, $pageSize, true, $cookie);
 			$result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
-			//ldap_sort($ldapconn, $result, 'cn');
-
 			$data = ldap_get_entries($ldapconn, $result);
 
-
-
 			for ($i=0; $i<$data["count"]; $i++) {
-        if (blacklistedDistinguishedname($data[$i]["distinguishedname"][0]) == FALSE){
+        if (blacklistedDistinguishedname($data[$i]["distinguishedname"][0],$refusedOU) == FALSE){
   				array_push($adlist,array(
-  					/*"cn"=>$data[$i]["cn"][0],
-  					"mail"=>isset($data[$i]["mail"][0]) ? $data[$i]["mail"][0] : "-",
-  					"employeeid"=>isset($data[$i]["employeeid"][0]) ? $data[$i]["employeeid"][0] : "-",
-  					"rpps"=>isset($data[$i]["rpps"][0]) ? $data[$i]["rpps"][0] : "-",
-  					"sam"=>$data[$i]["samaccountname"][0]*/
             "cn"=>$data[$i]["cn"][0],
   					"mail"=>getOr($data[$i]["mail"][0],"-"),
   					"employeeid"=>getOr($data[$i]["employeeid"][0],"-"),
-  					//"rpps"=>getOr($data[$i]["rpps"][0],"-"),
   					"sam"=>$data[$i]["samaccountname"][0],
 						"title"=>getOr($data[$i]["title"][0],"-")
   				));
         }
-				//echo($data[$i]["samaccountname"][0]);
 			}
-
 
 			ldap_control_paged_result_response($ldapconn, $result, $cookie);
 		}while($cookie !== null && $cookie != '');
 
-		//sort($adlist);
-
+		//trying to sort the list, works a bit !!!
 		function sortBySam($a, $b) {
 		   return strcmp($a['sam'], $b['sam']);
 		 }
@@ -76,14 +63,10 @@ if($ldapconn) {
 
 		for ($row = 0; $row < count($adlist); $row++) {
 			echo("<tr>");
-
-    echo("
-    <td><a href='detailCompte.php?id=".$adlist[$row]['sam']."'>".$adlist[$row]['cn']."</a></td>
-    <td>".$adlist[$row]['mail']."</td>
-		<td>".$adlist[$row]['title']."</td>
-    <td>".$adlist[$row]['employeeid']."</td>"
-    );
-
+	    echo("<td><a href='detailCompte.php?id=".$adlist[$row]['sam']."'>".$adlist[$row]['cn']."</a></td>");
+	    echo("<td>".$adlist[$row]['mail']."</td>");
+			echo("<td>".$adlist[$row]['title']."</td>");
+	    echo("<td>".$adlist[$row]['employeeid']."</td>");
 			echo("</tr>");
 		}
 		echo("</tbody></table>");

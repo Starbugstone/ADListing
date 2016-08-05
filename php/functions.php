@@ -1,4 +1,7 @@
 <?php
+
+
+
 function getOr(&$var, $default) {
     if (isset($var)) {
         return $var;
@@ -28,30 +31,16 @@ function debugToConsole( $data ) {
     echo $output;
 }
 
-function blacklistedDistinguishedname($distName){
-  if (preg_match('/OU=Admins/',$distName) == TRUE){
-    return TRUE;
+//check if the element's CN is blacklisted againsed a $refused list.
+//$refused is configured in config file
+function blacklistedDistinguishedname($distName, $refused=""){
+  $blacklisted = FALSE;
+  foreach ($refused as $refusedOU) {
+    $pattern = '/'.preg_quote($refusedOU, '/') . '/';
+    if (preg_match($pattern, $distName)){
+      $blacklisted = TRUE;
+    }
   }
-  elseif (preg_match('/OU=Compte de Service/',$distName) == TRUE){
-    return TRUE;
-  }
-  elseif (preg_match('/CN=Users/',$distName) == TRUE){
-    return TRUE;
-  }
-  elseif (preg_match('/OU=LDAP/',$distName) == TRUE){
-    return TRUE;
-  }
-  elseif (preg_match('/CN=Builtin/',$distName) == TRUE){
-    return TRUE;
-  }
-  elseif (preg_match('/CN=Microsoft Exchange System Objects/',$distName) == TRUE){
-    return TRUE;
-  }
-  elseif (preg_match('/OU=Microsoft Exchange Security Groups/',$distName) == TRUE){
-    return TRUE;
-  }
-  else{
-    return FALSE;
-  }
+  return $blacklisted;
 }
 ?>

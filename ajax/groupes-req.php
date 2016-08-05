@@ -29,7 +29,7 @@ if($ldapconn) {
 			$data = ldap_get_entries($ldapconn, $result);
 
 			for ($i=0; $i<$data["count"]; $i++) {
-				if(blacklistedDistinguishedname($data[$i]["distinguishedname"][0]) == FALSE){
+				if(blacklistedDistinguishedname($data[$i]["distinguishedname"][0], $refusedOU) == FALSE){
 					array_push($adlist,array(
 						"sam"=>$data[$i]["samaccountname"][0],
 						"cn"=>$data[$i]["cn"][0],
@@ -46,7 +46,7 @@ if($ldapconn) {
 
 
 		//need to find a way to sort alpha
-
+		//this works a but but not great. Data Tables takes care of it though
 		 function sortBySam($a, $b) {
 		   return strcmp($a['sam'], $b['sam']);
 		 }
@@ -72,6 +72,7 @@ if($ldapconn) {
 			 echo("<td><a href='detailGroupe.php?id=".$adlist[$row]['sam']."'>".$adlist[$row]['cn']."</a></td>");
 			 echo("<td>".$adlist[$row]['number']."</td>");
 			 echo("<td>".$adlist[$row]['mail']."</td>");
+
 			 if ($adlist[$row]['managedby'] != ""){
 			 	echo("<td><a href='detailCompte.php?dn=".$adlist[$row]['managedby']."'>".explodeCN($adlist[$row]['managedby'])."</a></td>");
 			 }
@@ -83,17 +84,6 @@ if($ldapconn) {
 		 }
 		 echo("</tbody></table>");
 
-		/*echo("<ul>");
-
-		for ($row = 0; $row < count($adlist); $row++) {
-			echo("<li>sam : ".$adlist[$row]['sam']." number : ".$adlist[$row]['number']."</li>");
-			echo("<li>_cn : ".$adlist[$row]['cn']." number : ".$adlist[$row]['number']."</li>");
-			echo("<li>-</li>");
-		}
-
-		echo("</ul>");*/
-
-
     } else {
         echo "LDAP bind failed...";
     }
@@ -102,10 +92,4 @@ if($ldapconn) {
 
 // all done? clean up
 ldap_close($ldapconn);
-
-function extractCN($dn){
-	$result = split("[=,]", utf8_encode($dn));
-	return utf8_decode($result[1]);
-}
-
- ?>
+?>

@@ -40,12 +40,7 @@ if($ldapconn) {
     $cn = getOr($data[0]['cn'][0],$samaccountname);
     $mail = getOr($data[0]['mail'][0],"Aucun mail");
     if(isset($data[0]['managedby'][0])){
-      $managedbyDN = $data[0]['managedby'][0];
-      $manager = explodeCN($data[0]['managedby'][0]);
-      $managedby = "<a href='detailCompte.php?dn=".$managedbyDN."'>".$manager."</a>";
-      /*echo '<h1>Dump all data</h1><pre>';
-        print_r($data);
-        echo '</pre>';*/
+      $managedby = "<a href='detailCompte.php?dn=".$data[0]['managedby'][0]."'>".explodeCN($data[0]['managedby'][0])."</a>";
     }
     else{
       $managedby ="Pas de Gestionnaire";
@@ -71,7 +66,6 @@ if($ldapconn) {
 
   } else {
     echo "LDAP bind failed...";
-    //$data=null;
   }
 }
  ?>
@@ -122,10 +116,8 @@ if($ldapconn) {
         <div class="panel-body">
 
             <?php
-            //debugToConsole($userGroup);
             if($memberNoError){
               foreach ($members as $member) {
-                //debugToConsole($member);
                 echo("<p><a href='groupeOuCompte.php?dn=".$member."'>".explodeCN($member)."</a></p>");
               }
             }
@@ -159,19 +151,10 @@ var clipboard = new Clipboard('.clipBtn');
 
 
 clipboard.on('success', function(e) {
-    //console.info('Action:', e.action);
-    //console.info('Text:', e.text);
-    //console.info('Trigger:', e.trigger);
-
     //clear the selected text. Looks ugly
     e.clearSelection();
 });
-/*
-clipboard.on('error', function(e) {
-    console.error('Action:', e.action);
-    console.error('Trigger:', e.trigger);
-});
-*/
+
 </script>
 </body>
 </html>

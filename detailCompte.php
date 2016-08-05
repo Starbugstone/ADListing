@@ -46,7 +46,6 @@ if($ldapconn) {
     $description = getOr($data[0]["description"][0],"Pas de description");
     $RPPS = getOr($data[0]["rpps"][0],"");
     if ($data[0]["useraccountcontrol"][0]==514){
-      debugToConsole("compte desactivé");
       $accountState = "<p><span class='glyphicon glyphicon-warning-sign'></span>Compte Desactive</p>";
     }else{
       $accountState = "";
@@ -63,9 +62,7 @@ if($ldapconn) {
 
     //3rd pannel
     if (isset($data[0]['manager'][0])){
-      $manager = explodeCN($data[0]['manager'][0]);
-      $managerDn = $data[0]['manager'][0];
-      $manager = "<a href='detailCompte.php?dn=".$managerDn."'>".$manager."</a>";
+      $manager = "<a href='detailCompte.php?dn=".$data[0]['manager'][0]."'>".explodeCN($data[0]['manager'][0])."</a>";
     }
     else{
       $manager = "Aucun Gestionnaire";
@@ -149,10 +146,8 @@ if($ldapconn) {
         <div class="panel-body">
 
             <?php
-            //debugToConsole($userGroup);
             if($userGroup!=$userGroupError){
               foreach( $userGroup as $grp) {
-                debugToConsole($grp);
                 //Get rid of all the excess CN and OU
                 echo ("<p><a href='detailGroupe.php?dn=".$grp."'>".explodeCN($grp) . "</a></p>");
               }
@@ -180,11 +175,9 @@ if($ldapconn) {
 
 
           <?php
-          //debugToConsole($userGroup);
           if($directReports!=$directReportsError){
             echo("<p><b>Colaborateurs&nbsp;:</b></p><ul class='colaboList'>");
             foreach( $directReports as $colabo) {
-              //debugToConsole($colabo);
               //Get rid of all the excess CN and OU
               $colaboName = explodeCN($colabo);
               echo ("<li><a href='detailCompte.php?dn=".$colabo."'>".$colaboName."</a></li>");

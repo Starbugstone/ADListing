@@ -43,6 +43,7 @@
 <script src="js/script.js"></script>
 <script>
 $(document).ready(function() {
+  //grabbing our ajax request
   $("#userTable").load("ajax/comptes-req.php", function() {
     //initialise dataTables
     $('#tableComptes').DataTable({
@@ -51,8 +52,6 @@ $(document).ready(function() {
       },
       paging: false
     });
-    //$("#loading1").hide();
-    //alert( "Load was performed." );
   });
 });
 

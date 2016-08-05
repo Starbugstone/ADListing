@@ -55,7 +55,6 @@ if($ldapconn) {
   }
 } else {
   echo "LDAP bind failed...";
-  //$data=null;
 }
 
 
