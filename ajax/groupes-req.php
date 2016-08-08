@@ -54,7 +54,7 @@ if($ldapconn) {
 		 usort($adlist, 'sortBySam');
 
 		 echo("
-		 <table id='tableGroupes' class='display'>
+		 <table id='tableGroupes' class='display adTable'>
 			 <thead>
 				 <tr>
 					 <th>Groupe</th>

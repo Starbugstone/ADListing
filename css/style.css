@@ -21,28 +21,30 @@
   margin-left: 20px;
 }
 
-table {
+table.adTable {
   border-collapse: collapse;
   margin:0 auto;
   width: 85%;
 }
 
-table, th, td {
+table.adTable,.adTable th,.adTable td {
   border: 1px solid black;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
-th{
+.adTable th{
   background-color:#ccffcc;
   text-align: center;
 }
 
-td{
+.adTable td{
 	text-align:center;
 	padding-top: 6px;
 	padding-bottom: 3px;
 }
 
-table tr:nth-child(even){
+table.adTable tr:nth-child(even){
 	background-color:#f3e6ff;
 }
 

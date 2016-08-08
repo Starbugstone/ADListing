@@ -34,7 +34,8 @@ if($ldapconn) {
   					"mail"=>getOr($data[$i]["mail"][0],""),
   					"employeeid"=>getOr($data[$i]["employeeid"][0],""),
   					"sam"=>$data[$i]["samaccountname"][0],
-						"title"=>getOr($data[$i]["title"][0],"")
+						"title"=>getOr($data[$i]["title"][0],""),
+						"managedby"=>getOr($data[$i]["manager"][0],"")
   				));
         }
 			}
@@ -49,13 +50,14 @@ if($ldapconn) {
 		 usort($adlist, 'sortBySam');
 
 		echo("
-		<table id='tableComptes' class='display'>
+		<table id='tableComptes' class='display adTable'>
 			<thead>
 				<tr>
 					<th>Utilisateur</th>
 					<th>Mail</th>
 					<th>Fonction</th>
-					<th>ID Salari&eacute;</th>
+					<th>Gestionnaire</th>
+					<th>ID</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -71,6 +73,12 @@ if($ldapconn) {
 			}
 			echo ("</td>");
 			echo("<td>".$adlist[$row]['title']."</td>");
+			if ($adlist[$row]['managedby'] != ""){
+				 echo("<td><a href='detailCompte.php?dn=".$adlist[$row]['managedby']."'>".explodeCN($adlist[$row]['managedby'])."</a></td>");
+			}
+			else {
+				echo ("<td></td>");
+			}				
 	    echo("<td>".$adlist[$row]['employeeid']."</td>");
 			echo("</tr>");
 		}

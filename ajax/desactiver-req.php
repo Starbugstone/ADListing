@@ -49,7 +49,7 @@ if($ldapconn) {
 		 usort($adlist, 'sortBySam');
 
 		echo("
-		<table id='tableDesactiver' class='display'>
+		<table id='tableDesactiver' class='display adTable'>
 			<thead>
 				<tr>
 					<th>Utilisateur</th>
