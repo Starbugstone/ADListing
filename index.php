@@ -25,6 +25,7 @@
 <div class="container-fluid text-center">
   <div class="row content">
     <div class="col-xs-12">
+
       <div id="userTable">
         <?php include 'ajax/loading.php'; ?>
       </div>
@@ -37,22 +38,45 @@
 <script src="js/jquery-2.2.4.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
-
+<script src="js/table2csv.js"></script>
 
 <script src="dataTables/datatables.min.js"></script>
+
 <script src="js/script.js"></script>
 <script>
 $(document).ready(function() {
   //grabbing our ajax request
   $("#userTable").load("ajax/comptes-req.php", function() {
-    //initialise dataTables
+    //initialise dataTables on the data
     $('#tableComptes').DataTable({
       "language": {
           "url": "dataTables/dataTables.french.lang"
       },
       paging: false
     });
+
+    //construct export to excel button after ajax call and wait for the dataTable calls init so we can use the search ID.
+    //called in doc ready will fail because the ID isn't present
+    var tableExport = $('#tableComptes').DataTable();
+    tableExport.on( 'init', function(){
+      //construct export button after the search bar
+      $("#tableComptes_filter>label").after("<a href='#' id='csvExportButton' class='btn btn-default exportButton' title='Exporter vers CSV'><span class='glyphicon glyphicon-save-file'></span></a>");
+      //add the on click to execute export
+      $("#csvExportButton").on('click', function (event) {
+          exportTableToCSV.apply(this, [$('#tableComptes'), 'Users.csv']);
+          // IF CSV, don't do event.preventDefault() or return false
+          // We actually need this to be a typical hyperlink
+      });
+    });
+
+
+
   });
+
+  //add handler
+
+
+
 });
 
 </script>

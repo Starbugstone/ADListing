@@ -7,12 +7,18 @@
   margin-top: 100px;
   background-image: url("../img/logoAS.png");
 }
+
 #userTable{
   margin-top: 30px;
 }
 
 .dataTables_filter{
   padding-bottom: 4px;
+}
+
+.dataTables_filter>.exportButton{
+  display: inline-block;
+  margin-left: 20px;
 }
 
 table {
@@ -61,6 +67,7 @@ table tr:nth-child(even){
   text-align: left;
 }
 
+/* Adding icons and cursor to the table headers */
 .sorting_desc, .sorting_asc, .sorting{
   cursor: pointer;
   cursor: hand;

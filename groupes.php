@@ -37,9 +37,11 @@
 <script src="js/jquery-2.2.4.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
-
+<script src="js/table2csv.js"></script>
 
 <script src="dataTables/datatables.min.js"></script>
+
+
 <script src="js/script.js"></script>
 <script>
 $(document).ready(function() {
@@ -51,6 +53,21 @@ $(document).ready(function() {
       },
       paging: false
     });
+
+    //construct export to excel button after ajax call and wait for the dataTable calls init so we can use the search ID.
+    //called in doc ready will fail because the ID isn't present
+    var tableExport = $('#tableGroupes').DataTable();
+    tableExport.on( 'init', function(){
+      //construct export button after the search bar
+      $("#tableGroupes_filter>label").after("<a href='#' id='csvExportButton' class='btn btn-default exportButton' title='Exporter vers CSV'><span class='glyphicon glyphicon-save-file'></span></a>");
+      //add the on click to execute export
+      $("#csvExportButton").on('click', function (event) {
+          exportTableToCSV.apply(this, [$('#tableGroupes'), 'Groupes.csv']);
+          // IF CSV, don't do event.preventDefault() or return false
+          // We actually need this to be a typical hyperlink
+      });
+    });
+
   });
 });
 
