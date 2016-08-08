@@ -51,7 +51,8 @@ $(document).ready(function() {
 
   });
 
-  //add handler
+    //taking care of navBar
+  $('#nav3').addClass("active");
 
 
 

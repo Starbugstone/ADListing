@@ -1,6 +1,7 @@
 <?php
 include 'php/config.php';
 include 'php/functions.php';
+
 // connect
 $ldapconn = ldap_connect($ldapserver) or die("Could not connect to LDAP server.");
 

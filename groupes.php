@@ -50,6 +50,10 @@ $(document).ready(function() {
     constructUserTable('#tableGroupes');
 
   });
+  
+  //taking care of navBar
+  $('#nav2').addClass("active");
+  
 });
 
 </script>

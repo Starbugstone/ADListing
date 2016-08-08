@@ -51,10 +51,9 @@ $(document).ready(function() {
     constructUserTable('#tableComptes');
 
   });
-
-  //add handler
-
-
+ 
+  //taking care of navBar
+  $('#nav1').addClass("active");
 
 });
 
