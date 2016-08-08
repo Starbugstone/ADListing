@@ -17,6 +17,7 @@ if($ldapconn) {
     //on fait un choix de filtre en fonction de ceux qu'on passe comme paramettre. Le resultat est toujours un seul utilisateurs car ces données doivent etre uniques dans AD
     if (isset($_GET['dn'])){
       $dn=$_GET['dn'];
+      $dn=escapeLdapFilter($dn);
       $filter = "(&(objectCategory=person)(distinguishedname=$dn))";
     }elseif (isset($_GET['id'])){
       $id=$_GET['id'];

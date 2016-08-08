@@ -17,6 +17,7 @@ if($ldapconn) {
     //on fait un choix de filtre en fonction de ceux qu'on passe comme paramettre. Le resultat est toujours un seul utilisateurs car ces données doivent etre uniques dans AD
     if (isset($_GET['dn'])){
       $dn=$_GET['dn'];
+      $dn=escapeLdapFilter($dn);
       $filter = "(&(objectCategory=group)(distinguishedname=$dn))";
     }elseif (isset($_GET['id'])){
       $id=$_GET['id'];
@@ -124,7 +125,7 @@ if($ldapconn) {
             <?php
             if($memberNoError){
               foreach ($members as $member) {
-                echo("<p><a href='groupeOuCompte.php?dn=".$member."'>".explodeCN($member)."</a></p>");
+                echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn='".$member."'></i><a href='groupeOuCompte.php?dn=".$member."'>".explodeCN($member)."</a></p>");
               }
             }
             else{
@@ -148,19 +149,34 @@ if($ldapconn) {
 <script src="js/jquery-2.2.4.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
-<script src="js/clipboard.min.js"></script>
-
 <script src="js/script.js"></script>
+
 <script>
+$(document).ready(function() {
+  $('.ajaxGroupeOuCompte').each(function(){
+    var element = this;
+    var $myDnData = $(this).data("dn");
+    //console.log($myDnData);
+    $.getJSON("ajax/groupeOuCompte-req.php?dn="+$myDnData,function(result){
+      //console.log(result['type']);
+      if(result['type']=="USER"){
+        //USer
+        console.log("User");
+        $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-user");
+      }else if(result['type']=="GROUP"){
+        //Group
+        console.log("Groupe");
+        $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-users");
+      }else{
+        //error
+        console.log("Error");
+        $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-question-circle-o");
+      }
+    });
+  });
 
-var clipboard = new Clipboard('.clipBtn');
 
-
-clipboard.on('success', function(e) {
-    //clear the selected text. Looks ugly
-    e.clearSelection();
 });
-
 </script>
 </body>
 </html>
