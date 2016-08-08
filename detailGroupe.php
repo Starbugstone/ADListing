@@ -167,7 +167,7 @@ $(document).ready(function() {
         $(element).prop('title', 'Groupe');
       }else{
         //error, need to add extra on error handeling
-        console.log("Error");
+        console.log(result['errorMessage']);
         $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-question-circle-o");
         $(element).prop('title', 'Erreur');
       }

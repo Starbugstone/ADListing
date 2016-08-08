@@ -34,7 +34,9 @@ if($ldapconn) {
       $filter = "(&(objectCategory=*)(displayname=$dispName))";
     }
     else{
-      echo("<h1>erreur de filtre</h1>");
+      $arr['isError']="1";
+      $arr['errorMessage']="Erreur de filtre";
+      //echo("<h1>erreur de filtre</h1>");
     }
 
     $result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
@@ -64,7 +66,8 @@ if($ldapconn) {
 
   }
 } else {
-  echo "LDAP bind failed...";
+  $arr['isError']="1";
+  $arr['errorMessage']="Erreur connexion LDAP";
 }
 
 
