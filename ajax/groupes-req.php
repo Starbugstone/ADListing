@@ -35,7 +35,8 @@ if($ldapconn) {
 						"cn"=>$data[$i]["cn"][0],
 						"number"=>getOr($data[$i]["member"]['count'],"0"),
 						"mail"=>getOr($data[$i]["mail"][0],""),
-						"managedby"=>getOr($data[$i]["managedby"][0],"")
+						"managedby"=>getOr($data[$i]["managedby"][0],""),
+						"grouptype"=>getOr($data[$i]["grouptype"][0],"")
 					));
 				}
 			}
@@ -69,12 +70,25 @@ if($ldapconn) {
 
 			 echo("<tr>");
 
-			 echo("<td><a href='detailGroupe.php?id=".$adlist[$row]['sam']."'>".$adlist[$row]['cn']."</a></td>");
+			 echo("<td><a href='detailGroupe.php?id=".$adlist[$row]['sam']."'>");
+			 		echo ($adlist[$row]['cn']);
+			 		if ($adlist[$row]['grouptype']<0){
+						echo("<i class='fa fa-shield secIcon' aria-hidden='true' title='Groupe de securite'></i>");
+					}else{
+						echo("<i class='fa fa-users secIcon' aria-hidden='true' title='Groupe de distribution'></i>");
+					}
+
+			 echo ("</a></td>");
 			 echo("<td>".$adlist[$row]['number']."</td>");
-			 echo("<td>".$adlist[$row]['mail']."</td>");
+			 echo("<td>");
+			 echo ($adlist[$row]['mail']);
+			 if ($adlist[$row]['mail'] !=""){
+				 echo ("<a href='mailto:".$adlist[$row]['mail']."'><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>");
+			 }
+			 echo ("</td>");
 
 			 if ($adlist[$row]['managedby'] != ""){
-			 	echo("<td><a href='detailCompte.php?dn=".$adlist[$row]['managedby']."'>".explodeCN($adlist[$row]['managedby'])."</a></td>");
+			 		echo("<td><a href='detailCompte.php?dn=".$adlist[$row]['managedby']."'>".explodeCN($adlist[$row]['managedby'])."</a></td>");
 			 }
 			 else {
 				 echo ("<td></td>");

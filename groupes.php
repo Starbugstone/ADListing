@@ -7,6 +7,7 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="dataTables/datatables.min.css">
+<link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">
 <title>Groupes AD</title>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -47,7 +48,7 @@
 $(document).ready(function() {
   $("#userTable").load("ajax/groupes-req.php", function() {
     constructUserTable('#tableGroupes');
-    
+
   });
 });
 

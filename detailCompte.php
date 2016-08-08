@@ -41,12 +41,17 @@ if($ldapconn) {
     $nom = getOr($data[0]['sn'][0], "Aucun nom de famille");
     $prenom = getOr($data[0]['givenname'][0], "Aucun Prenom");
     $nomPrenom = getOr($data[0]['sn'][0],"")." ".getOr($data[0]['givenname'][0],"");
-    $mail = getOr($data[0]['mail'][0],"Aucun mail");
+    //$mail = getOr($data[0]['mail'][0],"Aucun mail");
+    if (isset($data[0]['mail'][0])){
+      $mail = $data[0]['mail'][0]."<a href='mailto:".$data[0]['mail'][0]."'><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>";
+    }else{
+      $mail = "Aucun mail";
+    }
     $Matricule = getOr($data[0]["employeeid"][0],"");
     $description = getOr($data[0]["description"][0],"Pas de description");
     $RPPS = getOr($data[0]["rpps"][0],"");
     if ($data[0]["useraccountcontrol"][0]==514){
-      $accountState = "<p><span class='glyphicon glyphicon-warning-sign'></span>Compte Desactive</p>";
+      $accountState = "<p><span class='glyphicon glyphicon-warning-sign secIcon'></span>Compte Desactive</p>";
     }else{
       $accountState = "";
     }
@@ -97,6 +102,7 @@ if($ldapconn) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">
 <title>Compte - <?php echo($nomPrenom); ?></title>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
