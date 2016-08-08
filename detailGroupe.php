@@ -41,12 +41,12 @@ if($ldapconn) {
     $cn = getOr($data[0]['cn'][0],$samaccountname);
     //$mail = getOr($data[0]['mail'][0],"Aucun mail");
     if (isset($data[0]['mail'][0])){
-      $mail = $data[0]['mail'][0]."<a href='mailto:".$data[0]['mail'][0]."'><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>";
+      $mail = $data[0]['mail'][0]."<a href=\"mailto:".$data[0]['mail'][0]."\"><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>";
     }else{
       $mail = "Aucun mail";
     }
     if(isset($data[0]['managedby'][0])){
-      $managedby = "<a href='detailCompte.php?dn=".$data[0]['managedby'][0]."'>".explodeCN($data[0]['managedby'][0])."</a>";
+      $managedby = "<a href=\"detailCompte.php?dn=".$data[0]['managedby'][0]."\">".explodeCN($data[0]['managedby'][0])."</a>";
     }
     else{
       $managedby ="Pas de Gestionnaire";
@@ -125,7 +125,7 @@ if($ldapconn) {
             <?php
             if($memberNoError){
               foreach ($members as $member) {
-                echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn='".$member."'></i><a href='groupeOuCompte.php?dn=".$member."'>".explodeCN($member)."</a></p>");
+                echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn=\"".$member."\"></i><a href=\"groupeOuCompte.php?dn=".$member."\">".explodeCN($member)."</a></p>");
               }
             }
             else{

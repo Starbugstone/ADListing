@@ -65,20 +65,20 @@ if($ldapconn) {
 
 		for ($row = 0; $row < count($adlist); $row++) {
 			echo("<tr>");
-	    echo("<td><a href='detailCompte.php?id=".$adlist[$row]['sam']."'>".$adlist[$row]['cn']."</a></td>");
+	    echo("<td><a href=\"detailCompte.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['cn']."</a></td>");
 			echo("<td>");
 			echo ($adlist[$row]['mail']);
 			if ($adlist[$row]['mail'] !=""){
-				echo ("<a href='mailto:".$adlist[$row]['mail']."'><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>");
+				echo ("<a href=\"mailto:".$adlist[$row]['mail']."\"><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>");
 			}
 			echo ("</td>");
 			echo("<td>".$adlist[$row]['title']."</td>");
 			if ($adlist[$row]['managedby'] != ""){
-				 echo("<td><a href='detailCompte.php?dn=".$adlist[$row]['managedby']."'>".explodeCN($adlist[$row]['managedby'])."</a></td>");
+				 echo("<td><a href=\"detailCompte.php?dn=".$adlist[$row]['managedby']."\">".explodeCN($adlist[$row]['managedby'])."</a></td>");
 			}
 			else {
 				echo ("<td></td>");
-			}				
+			}
 	    echo("<td>".$adlist[$row]['employeeid']."</td>");
 			echo("</tr>");
 		}

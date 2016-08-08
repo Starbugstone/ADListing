@@ -44,7 +44,7 @@ if($ldapconn) {
     $nomPrenom = getOr($data[0]['sn'][0],"")." ".getOr($data[0]['givenname'][0],"");
     //$mail = getOr($data[0]['mail'][0],"Aucun mail");
     if (isset($data[0]['mail'][0])){
-      $mail = $data[0]['mail'][0]."<a href='mailto:".$data[0]['mail'][0]."'><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>";
+      $mail = $data[0]['mail'][0]."<a href=\"mailto:".$data[0]['mail'][0]."\"><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>";
     }else{
       $mail = "Aucun mail";
     }
@@ -68,7 +68,7 @@ if($ldapconn) {
 
     //3rd pannel
     if (isset($data[0]['manager'][0])){
-      $manager = "<a href='detailCompte.php?dn=".$data[0]['manager'][0]."'>".explodeCN($data[0]['manager'][0])."</a>";
+      $manager = "<a href=\"detailCompte.php?dn=".$data[0]['manager'][0]."\">".explodeCN($data[0]['manager'][0])."</a>";
     }
     else{
       $manager = "Aucun Gestionnaire";
@@ -156,7 +156,7 @@ if($ldapconn) {
             if($userGroup!=$userGroupError){
               foreach( $userGroup as $grp) {
                 //Get rid of all the excess CN and OU
-                echo ("<p><a href='detailGroupe.php?dn=".$grp."'>".explodeCN($grp) . "</a></p>");
+                echo ("<p><a href=\"detailGroupe.php?dn=".$grp."\">".explodeCN($grp) . "</a></p>");
               }
             }else{
               echo("<p>".$userGroupError."</p>");
@@ -187,7 +187,7 @@ if($ldapconn) {
             foreach( $directReports as $colabo) {
               //Get rid of all the excess CN and OU
               $colaboName = explodeCN($colabo);
-              echo ("<li><a href='detailCompte.php?dn=".$colabo."'>".$colaboName."</a></li>");
+              echo ("<li><a href=\"detailCompte.php?dn=".$colabo."\">".$colaboName."</a></li>");
             }
             echo("</ul>");
           }

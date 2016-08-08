@@ -63,7 +63,7 @@ if($ldapconn) {
 
 		for ($row = 0; $row < count($adlist); $row++) {
 			echo("<tr>");
-	    echo("<td><a href='detailCompte.php?id=".$adlist[$row]['sam']."'>".$adlist[$row]['cn']."</a></td>");
+	    echo("<td><a href=\"detailCompte.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['cn']."</a></td>");
 	    echo("<td>".$adlist[$row]['mail']."</td>");
 			echo("<td>".$adlist[$row]['title']."</td>");
 	    echo("<td>".$adlist[$row]['employeeid']."</td>");

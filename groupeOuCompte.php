@@ -36,12 +36,12 @@ if($ldapconn) {
     $objectType = $data[0]['objectclass'][1];
     if($objectType=="person"){
       echo "USER";
-      echo "<a href='detailCompte.php".$link."'>link</a>";
+      echo "<a href=\"detailCompte.php".$link."\">link</a>";
       $url = "detailCompte.php".$link;
     }
     elseif($objectType=="group"){
       echo "Groupe";
-      echo "<a href='detailGroupe.php".$link."'>link</a>";
+      echo "<a href=\"detailGroupe.php".$link."\">link</a>";
       $url = "detailGroupe.php".$link;
     }
     else{
