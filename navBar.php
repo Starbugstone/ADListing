@@ -12,6 +12,7 @@
       <ul class="nav navbar-nav">
         <li><a href="index.php">Comptes</a></li>
         <li><a href="groupes.php">Groupes</a></li>
+        <li><a href="desactiver.php">Desactiver</a></li>
       </ul>
       <!--<ul class="nav navbar-nav navbar-right">
         <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
