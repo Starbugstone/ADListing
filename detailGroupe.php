@@ -160,17 +160,16 @@ $(document).ready(function() {
     $.getJSON("ajax/groupeOuCompte-req.php?dn="+$myDnData,function(result){
       //console.log(result['type']);
       if(result['type']=="USER"){
-        //USer
-        console.log("User");
         $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-user");
+        $(element).prop('title', 'Utilisateur');
       }else if(result['type']=="GROUP"){
-        //Group
-        console.log("Groupe");
         $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-users");
+        $(element).prop('title', 'Groupe');
       }else{
-        //error
+        //error, need to add extra on error handeling
         console.log("Error");
         $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-question-circle-o");
+        $(element).prop('title', 'Erreur');
       }
     });
   });
