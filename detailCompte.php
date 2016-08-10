@@ -84,7 +84,10 @@ if($ldapconn) {
     $department = getOr($data[0]['department'][0],"Aucun Service");
     $company = getOr($data[0]['company'][0],"Aucun Societe");
     $telephone = getOr($data[0]['telephonenumber'][0],"Aucun Telephone");
+    $mobile = getOr($data[0]['mobile'][0],"Aucun mobile");
+    $fax = getOr($data[0]['facsimiletelephonenumber'][0],"Aucun Fax");
     $office = getOr($data[0]['physicaldeliveryofficename'][0],"Aucun Bureau");
+    $ville = getOr($data[0]['l'][0],"Aucun ville");
 
 
 
@@ -176,7 +179,10 @@ if($ldapconn) {
           <p><b>Fonction&nbsp;:</b> <?php echo($title); ?></p>
           <p><b>Service&nbsp;:</b> <?php echo($department); ?></p>
           <p><b>Bureau&nbsp;:</b> <?php echo($office); ?></p>
+          <p><b>Ville&nbsp;:</b> <?php echo($ville); ?></p>
           <p><b>Telephone&nbsp;:</b> <?php echo($telephone); ?></p>
+          <p><b>Mobile&nbsp;:</b> <?php echo($mobile); ?></p>
+          <p><b>Fax&nbsp;:</b> <?php echo($fax); ?></p>
           <p><b>Societe&nbsp;:</b> <?php echo($company); ?></p>
           <p><b>Gestionnaire&nbsp;:</b> <?php echo($manager); ?></p>
 

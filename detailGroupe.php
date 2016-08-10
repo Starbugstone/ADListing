@@ -126,7 +126,7 @@ if($ldapconn) {
             <?php
             if($memberNoError){
               foreach ($members as $member) {
-                echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn=\"".$member."\"></i><a href=\"groupeOuCompte.php?dn=".$member."\">".explodeCN($member)."</a></p>");
+                echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn=\"".$member."\"></i><a class='varLink' href=\"groupeOuCompte.php?dn=".$member."\">".explodeCN($member)."</a></p>");
               }
             }
             else{
@@ -155,23 +155,29 @@ if($ldapconn) {
 <script>
 $(document).ready(function() {
   $('.ajaxGroupeOuCompte').each(function(){
-    var element = this;
+    var $element = this;
     var $myDnData = $(this).data("dn");
     //console.log($myDnData);
     $.getJSON("ajax/groupeOuCompte-req.php?dn="+$myDnData,function(result){
-      //console.log(result['type']);
+      //grab the link element and the Href
+      var $linkElement = $($element).next(".varLink");
+      var $linkElementHref = ($linkElement).attr("href");
       if(result['type']=="USER"){
-        $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-user");
-        $(element).prop('title', 'Utilisateur');
+        $($element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-user");
+        $($element).prop('title', 'Utilisateur');
+        $linkElementHref = $linkElementHref.replace("groupeOuCompte.php?dn","detailCompte.php?dn");
       }else if(result['type']=="GROUP"){
-        $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-users");
-        $(element).prop('title', 'Groupe');
+        $($element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-users");
+        $($element).prop('title', 'Groupe');
+        $linkElementHref = $linkElementHref.replace("groupeOuCompte.php?dn","detailGroupe.php?dn");
       }else{
         //error, need to add extra on error handeling
         console.log(result['errorMessage']);
-        $(element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-question-circle-o");
-        $(element).prop('title', 'Erreur');
+        $($element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-question-circle-o");
+        $($element).prop('title', 'Erreur');
       }
+      //replace our link with the proper link depending on if group or user
+      ($linkElement).attr("href", $linkElementHref);
     });
   });
 
