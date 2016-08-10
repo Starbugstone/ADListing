@@ -1,7 +1,4 @@
 <?php
-
-
-
 function getOr(&$var, $default) {
     if (isset($var)) {
         return $var;
@@ -19,6 +16,14 @@ function explodeCN($cn){
   else{
     return $res2[0];
   }
+}
+
+function sortByCn($a, $b) {
+   return strcmp($a['cn'], $b['cn']);
+ }
+
+function sortBySam($a, $b) {
+  return strcmp($a['sam'], $b['sam']);
 }
 
 function debugToConsole( $data ) {

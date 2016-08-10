@@ -46,12 +46,8 @@ if($ldapconn) {
 		}while($cookie !== null && $cookie != '');
 
 
-		//need to find a way to sort alpha
-		//this works a but but not great. Data Tables takes care of it though
-		 function sortBySam($a, $b) {
-		   return strcmp($a['sam'], $b['sam']);
-		 }
-		 usort($adlist, 'sortBySam');
+		//Sorting the list
+		usort($adlist, 'sortByCn');
 
 		 echo("
 		 <table id='tableGroupes' class='display adTable'>

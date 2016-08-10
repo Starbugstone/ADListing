@@ -48,7 +48,7 @@ table.adTable tr:nth-child(even){
 	background-color:#f3e6ff;
 }
 
-.panel-body>p{
+.panel-body p{
   border-bottom: thin solid #ddd;
   padding-bottom: 3px;
   text-align: left;
@@ -72,7 +72,7 @@ table.adTable tr:nth-child(even){
   padding-right: 8px;
 }
 
-.colaboList>li{
+.colaboList>li, #collegues li{
   text-align: left;
 }
 

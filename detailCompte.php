@@ -69,6 +69,7 @@ if($ldapconn) {
     //3rd pannel
     if (isset($data[0]['manager'][0])){
       $manager = "<a href=\"detailCompte.php?dn=".$data[0]['manager'][0]."\">".explodeCN($data[0]['manager'][0])."</a>";
+      $managerDn = $data[0]['manager'][0];
     }
     else{
       $manager = "Aucun Gestionnaire";
@@ -198,6 +199,7 @@ if($ldapconn) {
             echo("</ul>");
           }
           ?>
+          <div id="collegues"><i class='fa fa-spinner fa-pulse'></i></div>
         </div>
       </div>
     </div>
@@ -214,24 +216,15 @@ if($ldapconn) {
 
 <script src="js/script.js"></script>
 <script>
+//load collegues via Ajax
+$("#collegues").load("ajax/getColabo-req.php?manager=<?php echo(rawurlencode($managerDn)); ?>&user=<?php echo(rawurlencode($samaccountname)); ?>");
 
 var clipboard = new Clipboard('.clipBtn');
-
-
 clipboard.on('success', function(e) {
-    //console.info('Action:', e.action);
-    //console.info('Text:', e.text);
-    //console.info('Trigger:', e.trigger);
-
     //clear the selected text. Looks ugly
     e.clearSelection();
 });
-/*
-clipboard.on('error', function(e) {
-    console.error('Action:', e.action);
-    console.error('Trigger:', e.trigger);
-});
-*/
+
 </script>
 </body>
 </html>

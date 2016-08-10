@@ -2,8 +2,10 @@
 include '../php/config.php';
 include '../php/functions.php';
 
+$manager=$_GET['manager'];
+$user=$_GET['user'];
 //filtre
-$filter='(&(objectCategory=person)(samaccountname=*)(!(useraccountcontrol=514)))';
+$filter='(&(objectCategory=person)(manager='.$manager.')(!(useraccountcontrol=514))(!(samaccountname='.$user.')))';
 //useraccountcontrol 514 is disactivated
 
 // connect
@@ -43,43 +45,18 @@ if($ldapconn) {
 			ldap_control_paged_result_response($ldapconn, $result, $cookie);
 		}while($cookie !== null && $cookie != '');
 
-		//Sorting the list
-		usort($adlist, 'sortByCn');
 
-		echo("
-		<table id='tableComptes' class='display adTable'>
-			<thead>
-				<tr>
-					<th>Utilisateur</th>
-					<th>Mail</th>
-					<th>Fonction</th>
-					<th>Gestionnaire</th>
-					<th>ID</th>
-				</tr>
-			</thead>
-			<tbody>
-		");
+    //sort the list by CN
+		 usort($adlist, 'sortByCn');
+     if($adlist){
+       echo "<p><b>Collegues&nbsp;:</b></p>";
+       echo("<ul>");
+  		for ($row = 0; $row < count($adlist); $row++) {
+  	    echo("<li><a href=\"detailCompte.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['cn']."</a></li>");
+  		}
+  		echo("</ul>");
+    }
 
-		for ($row = 0; $row < count($adlist); $row++) {
-			echo("<tr>");
-	    echo("<td><a href=\"detailCompte.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['cn']."</a></td>");
-			echo("<td>");
-			echo ($adlist[$row]['mail']);
-			if ($adlist[$row]['mail'] !=""){
-				echo ("<a href=\"mailto:".$adlist[$row]['mail']."\"><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>");
-			}
-			echo ("</td>");
-			echo("<td>".$adlist[$row]['title']."</td>");
-			if ($adlist[$row]['managedby'] != ""){
-				 echo("<td><a href=\"detailCompte.php?dn=".$adlist[$row]['managedby']."\">".explodeCN($adlist[$row]['managedby'])."</a></td>");
-			}
-			else {
-				echo ("<td></td>");
-			}
-	    echo("<td>".$adlist[$row]['employeeid']."</td>");
-			echo("</tr>");
-		}
-		echo("</tbody></table>");
     } else {
         echo "LDAP bind failed...";
     }
