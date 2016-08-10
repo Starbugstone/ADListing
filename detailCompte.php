@@ -67,12 +67,14 @@ if($ldapconn) {
     }
 
     //3rd pannel
+
     if (isset($data[0]['manager'][0])){
       $manager = "<a href=\"detailCompte.php?dn=".$data[0]['manager'][0]."\">".explodeCN($data[0]['manager'][0])."</a>";
       $managerDn = $data[0]['manager'][0];
     }
     else{
       $manager = "Aucun Gestionnaire";
+      $managerDn = "";
     }
     $directReportsError = "Aucun Colaborateur";
     if (isset($data[0]['directreports'])){
@@ -190,11 +192,13 @@ if($ldapconn) {
 
           <?php
           if($directReports!=$directReportsError){
-            echo("<p><b>Colaborateurs&nbsp;:</b></p><ul class='colaboList'>");
+            echo("<p><b>Collaborateurs&nbsp;:</b></p><ul class='colaboList'>");
             foreach( $directReports as $colabo) {
               //Get rid of all the excess CN and OU
-              $colaboName = explodeCN($colabo);
-              echo ("<li><a href=\"detailCompte.php?dn=".$colabo."\">".$colaboName."</a></li>");
+              if (blacklistedDistinguishedname($colabo,$refusedOU) == FALSE){
+                $colaboName = explodeCN($colabo);
+                echo ("<li><a href=\"detailCompte.php?dn=".$colabo."\">".$colaboName."</a></li>");
+              }
             }
             echo("</ul>");
           }
