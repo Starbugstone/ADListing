@@ -22,3 +22,60 @@ function constructUserTable($tableId){
     });
   });
 }
+
+//login ajax request
+function submitLogin(){
+  var $data = $("#login-nav").serialize();
+  var $response = null;
+  //console.log($data);
+  $.ajax({
+    type : 'POST',
+    url : 'ajax/login-req.php',
+    data : $data,
+    beforeSend : function(){
+      $("#btn-login").html('<i class="fa fa-spinner fa-pulse" aria-hidden="true"></i> &nbsp; Signing In ...');
+    },
+    success : function ($responseJSON){
+      $response = jQuery.parseJSON($responseJSON);
+      if ($response.state){
+        $("#btn-login").html('<i class="fa fa-question-circle-o" aria-hidden="true"></i> &nbsp; Ok ...');
+        $("#loginErrorMessage").html("");
+        $("#loginDropdown").addClass("hidden");
+        $("#logoutDropdown").removeClass("hidden");
+        $("#nonUpdatedUser").html($response.fullName);
+        $("#name").html($response.fullNameLink);
+        $("#manager").html($response.manager);
+        $("#mail").html($response.mail);
+        $("#phone").html($response.phone);
+        $("#mobile").html($response.mobile);
+        $("#fax").html($response.fax);
+      }else{
+        $("#btn-login").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; erreur ...');
+        $("#loginErrorMessage").html('<p>'+$response.error+'</p>');
+      }
+    }
+  });
+  return false;
+}
+
+
+//common JS to all pages
+$(document).ready(function() {
+  //log in
+  $("#login-nav").submit(function(e){
+    submitLogin();
+    e.preventDefault();
+  });
+
+  //logout
+  $("#logout").click(function(){
+    $.post("ajax/logout-req.php");
+    var $response = null;
+    $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp;Connexion AD');
+    $("#sAMAccountName").val("");
+    $("#AD_Password").val("");
+    $("#loginDropdown").removeClass("hidden");
+    $("#logoutDropdown").addClass("hidden");
+  });
+
+});

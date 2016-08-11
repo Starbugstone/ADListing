@@ -80,4 +80,6 @@ str_pad(dechex(ord($value)), 2, '0', STR_PAD_LEFT);
 return str_replace($metaChars, $quotedMetaChars, $str);
 }
 
+
+
 ?>

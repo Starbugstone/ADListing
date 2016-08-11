@@ -114,3 +114,36 @@ table.adTable tr:nth-child(even){
 
   }
 }
+
+/*----------------------------*/
+/*--- CSS For login panel ---*/
+/* http://bootsnipp.com/snippets/nP9Gn */
+#login-dp, #logedin-dp{
+    min-width: 350px;
+    padding: 14px 14px 0;
+    overflow:hidden;
+    background-color:rgba(255,255,255,.8);
+}
+#login-dp .help-block, , #logedin-dp .help-block{
+    font-size:12px
+}
+#login-dp .bottom, , #logedin-dp .bottom{
+    background-color:rgba(255,255,255,.8);
+    border-top:1px solid #ddd;
+    clear:both;
+    padding:14px;
+}
+
+#login-dp .form-group {
+    margin-bottom: 10px;
+}
+@media(max-width:768px){
+    #login-dp, , #logedin-dp{
+        background-color: inherit;
+        color: #fff;
+    }
+    #login-dp .bottom, , #logedin-dp .bottom{
+        background-color: inherit;
+        border-top:0 none;
+    }
+}
