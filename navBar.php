@@ -5,6 +5,9 @@ if ( !isset($_SESSION["sAMAccountName"]) ){
 }else{
   $ADSession=TRUE;
 }
+include_once 'php/config.php';
+include_once 'php/functions.php';
+include_once 'php/vars.php';
 ?>
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
@@ -68,6 +71,21 @@ if ( !isset($_SESSION["sAMAccountName"]) ){
             <li>
                <div class="row">
                   <div class="col-md-12">
+                    <?php
+                    foreach ($loggedinInfo as $row => $param){
+                      //is displayed
+                      if($param['isVisablePannel']){
+                        echo "<p class=\"logedinPannelElement\">";
+                          echo "<b>".$param['description']."&nbsp;: </b>";
+                          echo "<span class=\"logedinPannelSpan\" id=\"".$row."\">";
+                            if ($ADSession) {echo ($_SESSION[$row]);}
+                          echo "</span>";
+                        echo "</p>";
+                      }
+                    }
+                    ?>
+                    <p><a href="#" id="logout" class="btn btn-primary btn-block">Logout</a></p>
+                    <!--
                     <p><b>Nom affiché&nbsp;: </b><span id="name"><?php if ($ADSession) {echo ($_SESSION['fullNameLink']);  } ?></span></p>
                     <p><b>Gestionnaire&nbsp;: </b><span id="manager"><?php if ($ADSession) {echo ($_SESSION['manager']);  } ?></span></p>
                     <p><b>Email&nbsp;: </b><span id="mail"><?php if ($ADSession) {echo ($_SESSION['mail']);  } ?></span></p>
@@ -75,6 +93,7 @@ if ( !isset($_SESSION["sAMAccountName"]) ){
                     <p><b>Mobile&nbsp;: </b><span id="mobile"><?php if ($ADSession) {echo ($_SESSION['mobile']);  } ?></span></p>
                     <p><b>Fax&nbsp;: </b><span id="fax"><?php if ($ADSession) {echo ($_SESSION['fax']);  } ?></span></p>
                     <p><a href="#" id="logout" class="btn btn-primary btn-block">Logout</a></p>
+                  -->
                   </div>
                </div>
             </li>

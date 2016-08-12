@@ -27,29 +27,33 @@ function constructUserTable($tableId){
 function submitLogin(){
   var $data = $("#login-nav").serialize();
   var $response = null;
-  //console.log($data);
+  //ajax call
   $.ajax({
     type : 'POST',
     url : 'ajax/login-req.php',
     data : $data,
+    //change icon to spinning
     beforeSend : function(){
       $("#btn-login").html('<i class="fa fa-spinner fa-pulse" aria-hidden="true"></i> &nbsp; Signing In ...');
     },
     success : function ($responseJSON){
       $response = jQuery.parseJSON($responseJSON);
+      //check state, modify logon pannel then hide and show loggedin pannel
       if ($response.state){
-        $("#btn-login").html('<i class="fa fa-question-circle-o" aria-hidden="true"></i> &nbsp; Ok ...');
+        $("#btn-login").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Ok ...');
         $("#loginErrorMessage").html("");
         $("#loginDropdown").addClass("hidden");
         $("#logoutDropdown").removeClass("hidden");
-        $("#nonUpdatedUser").html($response.fullName);
-        $("#name").html($response.fullNameLink);
-        $("#manager").html($response.manager);
-        $("#mail").html($response.mail);
-        $("#phone").html($response.phone);
-        $("#mobile").html($response.mobile);
-        $("#fax").html($response.fax);
+        $("#nonUpdatedUser").html($response.responseName);
+        //go through all spans and update all elements
+        $(".logedinPannelElement").each(function(){
+          var element = $(this);
+          var elementSpan = $(".logedinPannelSpan:first",element);
+          var elementSpanID = $(elementSpan).attr('id');
+          $(elementSpan).html($response[elementSpanID]);
+        });
       }else{
+        //set error
         $("#btn-login").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; erreur ...');
         $("#loginErrorMessage").html('<p>'+$response.error+'</p>');
       }
@@ -69,13 +73,24 @@ $(document).ready(function() {
 
   //logout
   $("#logout").click(function(){
+    //destroy session
     $.post("ajax/logout-req.php");
+    //destroy response var
     var $response = null;
+    //reset and show login form
     $("#btn-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp;Connexion AD');
     $("#sAMAccountName").val("");
     $("#AD_Password").val("");
     $("#loginDropdown").removeClass("hidden");
     $("#logoutDropdown").addClass("hidden");
+    //delete all info in loggedOn form
+    $("#nonUpdatedUser").html('');
+    //go through all spans and update all elements
+    $(".logedinPannelElement").each(function(){
+      var element = $(this);
+      var elementSpan = $(".logedinPannelSpan:first",element);
+      $(elementSpan).html('');
+    });
   });
 
 });
