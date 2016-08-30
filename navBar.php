@@ -1,5 +1,8 @@
 <?php
-session_start();
+if(!isset($_SESSION))
+  {
+    session_start();
+  }
 if ( !isset($_SESSION["sAMAccountName"]) ){
   $ADSession=FALSE;
 }else{
@@ -84,16 +87,8 @@ include_once 'php/vars.php';
                       }
                     }
                     ?>
-                    <p><a href="#" id="logout" class="btn btn-primary btn-block">Logout</a></p>
-                    <!--
-                    <p><b>Nom affiché&nbsp;: </b><span id="name"><?php if ($ADSession) {echo ($_SESSION['fullNameLink']);  } ?></span></p>
-                    <p><b>Gestionnaire&nbsp;: </b><span id="manager"><?php if ($ADSession) {echo ($_SESSION['manager']);  } ?></span></p>
-                    <p><b>Email&nbsp;: </b><span id="mail"><?php if ($ADSession) {echo ($_SESSION['mail']);  } ?></span></p>
-                    <p><b>Telephone&nbsp;: </b><span id="phone"><?php if ($ADSession) {echo ($_SESSION['phone']);  } ?></span></p>
-                    <p><b>Mobile&nbsp;: </b><span id="mobile"><?php if ($ADSession) {echo ($_SESSION['mobile']);  } ?></span></p>
-                    <p><b>Fax&nbsp;: </b><span id="fax"><?php if ($ADSession) {echo ($_SESSION['fax']);  } ?></span></p>
-                    <p><a href="#" id="logout" class="btn btn-primary btn-block">Logout</a></p>
-                  -->
+                    <p><a href="modificationPerso.php" class="btn btn-primary btn-block">Modifier votre compte</a></p>
+                    <p><a href="#" id="logout" class="btn btn-primary btn-block">Deconnexion</a></p>
                   </div>
                </div>
             </li>

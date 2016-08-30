@@ -44,9 +44,11 @@ if($ldapconn) {
     $nomPrenom = getOr($data[0]['sn'][0],"")." ".getOr($data[0]['givenname'][0],"");
     //$mail = getOr($data[0]['mail'][0],"Aucun mail");
     if (isset($data[0]['mail'][0])){
-      $mail = $data[0]['mail'][0]."<a href=\"mailto:".$data[0]['mail'][0]."\"><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>";
+      $mail = $data[0]['mail'][0];
+      $mail_link = "<a href=\"mailto:".$data[0]['mail'][0]."\"><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>";
     }else{
       $mail = "Aucun mail";
+      $mail_link = "";
     }
     $Matricule = getOr($data[0]["employeeid"][0],"");
     $description = getOr($data[0]["description"][0],"Pas de description");
@@ -91,7 +93,7 @@ if($ldapconn) {
     $fax = getOr($data[0]['facsimiletelephonenumber'][0],"Aucun Fax");
     $office = getOr($data[0]['physicaldeliveryofficename'][0],"Aucun Bureau");
     $ville = getOr($data[0]['l'][0],"Aucun ville");
-
+    $fullDn = $data[0]['dn']; //echo $fullDn;
 
 
   } else {
@@ -138,7 +140,7 @@ if($ldapconn) {
           <p><b>Nom&nbsp;:</b> <span id='Nom'><?php echo($nom); ?></span><button class='btn clipBtn' data-clipboard-target='#Nom' title="Copier Nom"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Prenom&nbsp;:</b> <span id='Prenom'><?php echo($prenom); ?></span><button class='btn clipBtn' data-clipboard-target='#Prenom' title="Copier Prenom"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Nom&#8209;Prenom&nbsp;:</b> <span id='NomPrenom'><?php echo($nomPrenom); ?></span><button class='btn clipBtn' data-clipboard-target='#NomPrenom' title="Copier Nom-Prenom"><span class="glyphicon glyphicon-copy"></span></button></p>
-          <p><b>Mail&nbsp;:</b> <span id='mail'><?php echo($mail); ?></span><button class='btn clipBtn' data-clipboard-target='#mail' title="Copier Mail"><span class="glyphicon glyphicon-copy"></span></button></p>
+          <p><b>Mail&nbsp;:</b> <span id='e-mail'><?php echo($mail); ?></span><?php echo($mail_link); ?><button class='btn clipBtn' data-clipboard-target='#e-mail' title="Copier Mail"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Matricule&nbsp;:</b> <span id='Matricule'><?php echo($Matricule); ?></span><button class='btn clipBtn' data-clipboard-target='#Matricule' title="Copier Matricule"><span class="glyphicon glyphicon-copy"></span></button></p>
           <?php
           if ($RPPS != ""){
@@ -204,6 +206,7 @@ if($ldapconn) {
           }
           ?>
           <div id="collegues"><i class='fa fa-spinner fa-pulse'></i></div>
+          <div id="GestionGroupes"><i class='fa fa-spinner fa-pulse'></i></div>
         </div>
       </div>
     </div>
@@ -222,11 +225,14 @@ if($ldapconn) {
 <script>
 //load collegues via Ajax
 $("#collegues").load("ajax/getColabo-req.php?manager=<?php echo(rawurlencode($managerDn)); ?>&user=<?php echo(rawurlencode($samaccountname)); ?>");
+$("#GestionGroupes").load("ajax/getGroupsManagedBy-req.php?user=<?php echo(rawurlencode($fullDn)); ?>");
 
 var clipboard = new Clipboard('.clipBtn');
 clipboard.on('success', function(e) {
     //clear the selected text. Looks ugly
     e.clearSelection();
+    //console.info('Action:', e.action);
+    //console.info('Text:', e.text);
 });
 
 </script>

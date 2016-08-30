@@ -72,8 +72,12 @@ table.adTable tr:nth-child(even){
   padding-right: 8px;
 }
 
-.colaboList>li, #collegues li{
+.colaboList>li, #collegues li, #GestionGroupes li{
   text-align: left;
+}
+
+.modInput{
+  text-align: center;
 }
 
 /* Adding icons and cursor to the table headers */

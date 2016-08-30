@@ -8,7 +8,10 @@ $returndata = array(
   'error' =>'',
   'responseName' => '' // these 3 are neede for the main reply, the rest will be added dynamicly with the values from vars.php later
 );
-session_start();
+if(!isset($_SESSION))
+  {
+    session_start();
+  }
 if ( isset($_POST['sAMAccountName']) ) {
   $user_samaccountname = $ldapdomain ."\\".trim($_POST['sAMAccountName']);
   $sam = trim($_POST['sAMAccountName']);

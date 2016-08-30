@@ -157,7 +157,6 @@ $(document).ready(function() {
   $('.ajaxGroupeOuCompte').each(function(){
     var $element = this;
     var $myDnData = $(this).data("dn");
-    //console.log($myDnData);
     $.getJSON("ajax/groupeOuCompte-req-json.php?dn="+$myDnData,function(result){
       //grab the link element and the Href
       var $linkElement = $($element).next(".varLink");

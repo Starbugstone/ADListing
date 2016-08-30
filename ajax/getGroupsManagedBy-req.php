@@ -2,8 +2,9 @@
 include '../php/config.php';
 include '../php/functions.php';
 
+$user=$_GET['user'];
 //filtre
-$filter='(&(objectCategory=person)(samaccountname=*)(useraccountcontrol=514))';
+$filter='(&(objectCategory=group)(managedBy='.$user.'))';
 //useraccountcontrol 514 is disactivated
 
 // connect
@@ -28,46 +29,29 @@ if($ldapconn) {
 			$data = ldap_get_entries($ldapconn, $result);
 
 			for ($i=0; $i<$data["count"]; $i++) {
-        if (blacklistedDistinguishedname($data[$i]["distinguishedname"][0],$refusedOU) == FALSE){
+
   				array_push($adlist,array(
-            "cn"=>$data[$i]["cn"][0],
-  					"mail"=>getOr($data[$i]["mail"][0],"-"),
-  					"employeeid"=>getOr($data[$i]["employeeid"][0],"-"),
   					"sam"=>$data[$i]["samaccountname"][0],
-						"title"=>getOr($data[$i]["title"][0],"-")
+						"cn"=>$data[0]['cn'][0]
   				));
-        }
+
 			}
 
 			ldap_control_paged_result_response($ldapconn, $result, $cookie);
 		}while($cookie !== null && $cookie != '');
 
-		//trying to sort the list, works a bit !!!
 
-		 usort($adlist, 'sortBySam');
+    //sort the list by CN
+		 usort($adlist, 'sortByCn');
+     if($adlist){
+       echo "<p><b>Gere les groupes&nbsp;:</b></p>";
+       echo("<ul>");
+  		for ($row = 0; $row < count($adlist); $row++) {
+  	    echo("<li><a href=\"detailGroupe.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['sam']."</a></li>");
+  		}
+  		echo("</ul>");
+    }
 
-		echo("
-		<table id='tableDesactiver' class='display adTable'>
-			<thead>
-				<tr>
-					<th>Utilisateur</th>
-					<th>Mail</th>
-					<th>Fonction</th>
-					<th>ID Salari&eacute;</th>
-				</tr>
-			</thead>
-			<tbody>
-		");
-
-		for ($row = 0; $row < count($adlist); $row++) {
-			echo("<tr>");
-	    echo("<td><a href=\"detailCompte.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['cn']."</a></td>");
-	    echo("<td>".$adlist[$row]['mail']."</td>");
-			echo("<td>".$adlist[$row]['title']."</td>");
-	    echo("<td>".$adlist[$row]['employeeid']."</td>");
-			echo("</tr>");
-		}
-		echo("</tbody></table>");
     } else {
         echo "LDAP bind failed...";
     }

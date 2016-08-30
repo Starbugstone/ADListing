@@ -1,13 +1,18 @@
 <?php
 include 'php/config.php';
 include 'php/functions.php';
+include 'php/vars.php';
 
-session_start();
+if(!isset($_SESSION))
+  {
+    session_start();
+  }
 /*if ( !isset($_SESSION["ADUserName"]) ){
   header("login.php");
   exit();
 }*/
 
+//need to check is has session
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,10 +41,30 @@ session_start();
 
 <div class="container-fluid text-center">
   <div class="row content">
-    <div class="col-xs-12">
+    <div class="col-xs-6 col-xs-offset-3">
 
       <h1>user modification</h1>
+      <form>
+        <?php
+        foreach ($loggedinInfo as $row => $param){
+          //is displayed
+          $formDisableClass = '';
+          if($param['isVisableModify']){
+            if (!$param['isModifiable']){$formDisableClass='disabled';}
+            echo "<div class='form-group'>";
+            echo "<label for=\" ".$row." \">".$param['description']."</label>";
+            echo "<input type='text' class='form-control modInput' id=\" ".$row." \" aria-describedby=\"".$row."help\" value=\"".$_SESSION[$row]."\" ".$formDisableClass.">";
+            echo "<small id=\" ".$row."help\" class='form-control text-muted'>".$param['isModifiableText']."</small>";
+            echo "</div>";
 
+          }
+        }
+
+
+        //submit button needs to have a write to log attached. take care of it in the php update file
+        ?>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
     </div>
   </div>
 </div>
@@ -49,12 +74,10 @@ session_start();
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
 <script src="js/table2csv.js"></script>
-
-
 <script src="js/script.js"></script>
 <script>
 $(document).ready(function() {
-  //grabbing our ajax request
+
 
 
 });
