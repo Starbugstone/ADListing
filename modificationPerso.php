@@ -44,7 +44,7 @@ if(!isset($_SESSION))
     <div class="col-xs-6 col-xs-offset-3">
 
       <h1>user modification</h1>
-      <form>
+      <form id="AdUpdateForm">
         <?php
         foreach ($loggedinInfo as $row => $param){
           //is displayed
@@ -52,9 +52,9 @@ if(!isset($_SESSION))
           if($param['isVisableModify']){
             if (!$param['isModifiable']){$formDisableClass='disabled';}
             echo "<div class='form-group'>";
-            echo "<label for=\" ".$row." \">".$param['description']."</label>";
-            echo "<input type='text' class='form-control modInput' id=\" ".$row." \" aria-describedby=\"".$row."help\" value=\"".$_SESSION[$row]."\" ".$formDisableClass.">";
-            echo "<small id=\" ".$row."help\" class='form-control text-muted'>".$param['isModifiableText']."</small>";
+            echo "<label for=\"".$row."\">".$param['description']."</label>";
+            echo "<input type='text' class='form-control modInput' id=\"".$row."\" name=\"".$row."\" aria-describedby=\"".$row."help\" value=\"".$_SESSION[$row]."\" ".$formDisableClass.">";
+            echo "<small id=\"".$row."help\" class='form-control text-muted'>".$param['isModifiableText']."</small>";
             echo "</div>";
 
           }
@@ -63,7 +63,7 @@ if(!isset($_SESSION))
 
         //submit button needs to have a write to log attached. take care of it in the php update file
         ?>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary" name="btn-updateAD" id="btn-updateAD">Mettre a jour</button>
       </form>
     </div>
   </div>
@@ -73,11 +73,43 @@ if(!isset($_SESSION))
 <script src="js/jquery-2.2.4.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
-<script src="js/table2csv.js"></script>
 <script src="js/script.js"></script>
 <script>
-$(document).ready(function() {
+//Update AD ajax request
+function submitUpdate(){
+  var $data = $("#AdUpdateForm").serialize();
+  var $response = null;
+  //ajax call
+  $.ajax({
+    type : 'POST',
+    url : 'ajax/updateAD-req.php',
+    data : $data,
+    //change icon to spinning
+    beforeSend : function(){
+      $("#btn-updateAD").html('<i class="fa fa-spinner fa-pulse" aria-hidden="true"></i> &nbsp; Mise a jour ...');
+    },
+    success : function ($responseJSON){
+      $response = jQuery.parseJSON($responseJSON);
+      //check state, modify logon pannel then hide and show loggedin pannel
+      if ($response.state){
+        $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Ok ...');
+        console.log($response);
+      }else{
+        //set error
+        $("#btn-updateAD").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; erreur ...');
+        console.log($response.error);
+      }
+    }
+  });
+  return false;
+}
 
+$(document).ready(function() {
+  //update
+  $("#AdUpdateForm").submit(function(e){
+    submitUpdate();
+    e.preventDefault();
+  });
 
 
 });

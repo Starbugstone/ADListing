@@ -89,6 +89,7 @@ if ( isset($_POST['sAMAccountName']) ) {
 
     }
   }
+  ldap_close();
   echo json_encode($returndata);
 
 }
