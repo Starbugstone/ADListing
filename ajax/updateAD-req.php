@@ -57,15 +57,19 @@ if (isset($_SESSION['domainsAMAccountName'])) {
               if ($_POST[$row]!= null) {
                 $userdata[$param['ldapName']][0] = $_POST[$row];
                 ldap_modify($ldapconn,$ldapParamDn,$userdata);
+                //Update the session and add to returndata to update the mod page
+                $_SESSION[$row] = $returndata[$row]= $_POST[$row];
               }
               // If deleted, we must use ldap_mod_del
               else{
+                //need to get the existing value. grab from session
                 $userdata[$param['ldapName']][0] = $_SESSION[$row];
                 ldap_mod_del($ldapconn, $ldapParamDn, $userdata);
-                $returndata[$row]='delete';
+                //Update the session and add to returndata to update the mod page
+                $_SESSION[$row] = $returndata[$row]= $param['ldapErrorVal'];
+
               }
-              //Update the session and add to returndata to update the mod page
-              $_SESSION[$row] = $returndata[$row]= $_POST[$row];
+
 
             }
             else {
