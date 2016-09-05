@@ -45,6 +45,7 @@ function submitLogin(){
         $("#loginDropdown").addClass("hidden");
         $("#logoutDropdown").removeClass("hidden");
         $("#nonUpdatedUser").html($response.responseName);
+        $("#logedInUserName").html($response.responseName);
         //go through all spans and update all elements
         $(".logedinPannelElement").each(function(){
           var element = $(this);

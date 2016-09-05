@@ -24,7 +24,13 @@ if (isset($_SESSION['domainsAMAccountName'])) {
       // binding to ldap server
       $ldapbind = ldap_bind($ldapconn, $_SESSION['domainsAMAccountName'], $_SESSION['password']);
       if ($ldapbind) {
-        //ok we're in with the user's credentials. Let's update
+        //ok we're in with the user's credentials. Let's update.
+
+        //check if we go into super admin mode (damn feals bad doing this but no other way, have to go through ALL security)
+        //At least we did a regular user connexion check and a session check before.
+        if ($bypassUserRights){
+          $ldapbind = ldap_bind($ldapconn, $ldapAdminuser, $ldapAdminpass);
+        }
         $returndata['state']=true;
 
         //1st grab the actual info so we can check later
@@ -40,12 +46,26 @@ if (isset($_SESSION['domainsAMAccountName'])) {
             //only grab the stuff that was shown in the modifiable form. We should only be getting info from there
             $ldapParamData = $data[0][$param['ldapName']][0];
             if ($_POST[$row] != $param['ldapErrorVal'] and $_POST[$row] != $ldapParamData) {
-              //check if it's diffrent to the null value or ad value
-              $returndata[$row]="  ".$row." ok, updating";//testing
+              //check if it's diffrent to the null value or AD value
+
+              //construct the array for the php update
               $ldapParamDn = $data[0]['dn'];
               $userdata=array();
               $userdata[$param['ldapName']][0] = $_POST[$row];
-              ldap_modify($ldapconn,$ldapParamDn,$userdata);
+              //update AD
+              //check if not deleted entry
+              if ($_POST[$row]!= null) {
+                $userdata[$param['ldapName']][0] = $_POST[$row];
+                ldap_modify($ldapconn,$ldapParamDn,$userdata);
+              }
+              // If deleted, we must use ldap_mod_del
+              else{
+                $userdata[$param['ldapName']][0] = $_SESSION[$row];
+                ldap_mod_del($ldapconn, $ldapParamDn, $userdata);
+                $returndata[$row]='delete';
+              }
+              //Update the session and add to returndata to update the mod page
+              $_SESSION[$row] = $returndata[$row]= $_POST[$row];
 
             }
             else {

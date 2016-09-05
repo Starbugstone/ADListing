@@ -5,6 +5,7 @@ info to store once loggedIn
 STocked in an array which we will use for all info shown. That way we can modify the info with just one modif
 
 do not use state, error or responseName as name of variable, reserved for the ajax reply.
+anso reserved are : sAMAccountName, domainsAMAccountName and password.
 'Name of variable' => array(
   'isVisablePannel' => '0-1', Visible on the logon pannel
   'isVisableModify' => '0-1', visible on the modify table
@@ -18,6 +19,8 @@ do not use state, error or responseName as name of variable, reserved for the aj
   'isModifiable' => '0-1', Can the user update this on his own
   'isModifiableText' => '***' Text to show on modify page.
 )
+
+do not allow users to modify 
 
 ------------------------------------*/
 $loggedinInfo = array(
@@ -46,6 +49,19 @@ $loggedinInfo = array(
     'linkPageLdapVar' => 'samaccountname',
     'isModifiable' => '0',
     'isModifiableText' => ''
+  ),
+  'fonction' => array(
+    'isVisablePannel' => '1',
+    'isVisableModify' => '1',
+    'ldapName' => 'title',
+    'ldapNameExplodeCN' => '0',
+    'description' => 'Votre fonction',
+    'ldapErrorVal' => 'Aucun fonction defini',
+    'isLink' => '0',
+    'linkPage' => '',
+    'linkPageLdapVar' => '',
+    'isModifiable' => '0',
+    'isModifiableText' => 'Votre fonction'
   ),
   'mail' => array(
     'isVisablePannel' => '1',
@@ -99,9 +115,9 @@ $loggedinInfo = array(
     'isModifiable' => '1',
     'isModifiableText' => 'Votre numero de Fax'
   ),
-  'manager' => array(
+  'managerLink' => array(
     'isVisablePannel' => '1',
-    'isVisableModify' => '1',
+    'isVisableModify' => '0',
     'ldapName' => 'manager',
     'ldapNameExplodeCN' => '1',
     'description' => 'Gestionnaire',
@@ -111,6 +127,71 @@ $loggedinInfo = array(
     'linkPageLdapVar' => 'manager',
     'isModifiable' => '0',
     'isModifiableText' => 'Votre gestionnaire'
+  ),
+  'manager' => array(
+    'isVisablePannel' => '0',
+    'isVisableModify' => '1',
+    'ldapName' => 'manager',
+    'ldapNameExplodeCN' => '1',
+    'description' => 'Gestionnaire',
+    'ldapErrorVal' => 'Aucun Gestionnaire',
+    'isLink' => '0',
+    'linkPage' => '',
+    'linkPageLdapVar' => '',
+    'isModifiable' => '0',
+    'isModifiableText' => 'Votre gestionnaire'
+  ),
+  'bureau' => array(
+    'isVisablePannel' => '0',
+    'isVisableModify' => '1',
+    'ldapName' => 'physicaldeliveryofficename',
+    'ldapNameExplodeCN' => '0',
+    'description' => 'Bureau',
+    'ldapErrorVal' => 'Aucun bureau defini',
+    'isLink' => '0',
+    'linkPage' => '',
+    'linkPageLdapVar' => '',
+    'isModifiable' => '0',
+    'isModifiableText' => 'Votre Bureau'
+  ),
+  'service' => array(
+    'isVisablePannel' => '0',
+    'isVisableModify' => '1',
+    'ldapName' => 'departtment',
+    'ldapNameExplodeCN' => '0',
+    'description' => 'Service',
+    'ldapErrorVal' => 'Aucun service defini',
+    'isLink' => '0',
+    'linkPage' => '',
+    'linkPageLdapVar' => '',
+    'isModifiable' => '0',
+    'isModifiableText' => 'Votre Service'
+  ),
+  'societe' => array(
+    'isVisablePannel' => '0',
+    'isVisableModify' => '1',
+    'ldapName' => 'company',
+    'ldapNameExplodeCN' => '0',
+    'description' => 'Societe',
+    'ldapErrorVal' => 'Aucun bureau defini',
+    'isLink' => '0',
+    'linkPage' => '',
+    'linkPageLdapVar' => '',
+    'isModifiable' => '0',
+    'isModifiableText' => 'Votre Societe'
+  ),
+  'Commentaire' => array(
+    'isVisablePannel' => '0',
+    'isVisableModify' => '1',
+    'ldapName' => 'description',
+    'ldapNameExplodeCN' => '0',
+    'description' => 'Commentaire',
+    'ldapErrorVal' => '',
+    'isLink' => '0',
+    'linkPage' => '',
+    'linkPageLdapVar' => '',
+    'isModifiable' => '1',
+    'isModifiableText' => 'Description de votre compte'
   )
 );
 

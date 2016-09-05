@@ -7,12 +7,13 @@ if(!isset($_SESSION))
   {
     session_start();
   }
-/*if ( !isset($_SESSION["ADUserName"]) ){
-  header("login.php");
+if ( !isset($_SESSION['domainsAMAccountName']) ){
+  header('Location: index.php');
   exit();
-}*/
+}
 
 //need to check is has session
+//also need to grab info from AD and not the session. but ok for the moment while testing
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,10 +95,12 @@ function submitUpdate(){
       if ($response.state){
         $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Ok ...');
         console.log($response);
+
       }else{
         //set error
         $("#btn-updateAD").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; erreur ...');
         console.log($response.error);
+
       }
     }
   });

@@ -36,7 +36,7 @@ if ( isset($_POST['sAMAccountName']) ) {
       $data = ldap_get_entries($ldapconn,$result);
 
       $_SESSION['responseName'] = $returndata['responseName'] = $data[0]['displayname'][0];
-      //get all the info from our vars.php file
+      //get all the info from our vars.php file then store in session to not charge AD requests just for the menu
       foreach ($loggedinInfo as $row => $param) {
         //add extra element to array for return
         $returndata[$row]='';

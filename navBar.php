@@ -60,7 +60,7 @@ include_once 'php/vars.php';
         </li>
 
         <li id="logoutDropdown" class="dropdown <?php if(!$ADSession){echo 'hidden';}?>">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="logedInUserName">
             <span class="glyphicon glyphicon-user"></span>
 
             <?php
