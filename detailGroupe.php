@@ -126,7 +126,7 @@ if($ldapconn) {
             <?php
             if($memberNoError){
               foreach ($members as $member) {
-                echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn=\"".$member."\"></i><a class='varLink' href=\"groupeOuCompte.php?dn=".$member."\">".explodeCN($member)."</a></p>");
+                echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn=\"".removeAccents($member)."\"></i><a class='varLink' href=\"groupeOuCompte.php?dn=".removeAccents($member)."\">".explodeCN($member)."</a></p>");
               }
             }
             else{

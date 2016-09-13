@@ -66,7 +66,7 @@ if($ldapconn) {
 
 			 echo("<tr>");
 
-			 echo("<td><a href=\"detailGroupe.php?id=".$adlist[$row]['sam']."\">");
+			 echo("<td><a href=\"detailGroupe.php?id=".removeAccents($adlist[$row]['sam'])."\">");
 			 		echo ($adlist[$row]['cn']);
 			 		if ($adlist[$row]['grouptype']<0){
 						echo("<i class='fa fa-shield secIcon' aria-hidden='true' title='Groupe de securite'></i>");
@@ -84,7 +84,7 @@ if($ldapconn) {
 			 echo ("</td>");
 
 			 if ($adlist[$row]['managedby'] != ""){
-			 		echo("<td><a href=\"detailCompte.php?dn=".$adlist[$row]['managedby']."\">".explodeCN($adlist[$row]['managedby'])."</a></td>");
+			 		echo("<td><a href=\"detailCompte.php?dn=".removeAccents($adlist[$row]['managedby'])."\">".explodeCN($adlist[$row]['managedby'])."</a></td>");
 			 }
 			 else {
 				 echo ("<td></td>");

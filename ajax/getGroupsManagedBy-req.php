@@ -44,10 +44,10 @@ if($ldapconn) {
     //sort the list by CN
 		 usort($adlist, 'sortByCn');
      if($adlist){
-       echo "<p><b>Gere les groupes&nbsp;:</b></p>";
+       echo "<p><b>Gestionnaire des groupes&nbsp;:</b></p>";
        echo("<ul>");
   		for ($row = 0; $row < count($adlist); $row++) {
-  	    echo("<li><a href=\"detailGroupe.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['sam']."</a></li>");
+  	    echo("<li><a href=\"detailGroupe.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['sam']."</a></li>");
   		}
   		echo("</ul>");
     }

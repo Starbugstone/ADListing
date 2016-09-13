@@ -72,9 +72,7 @@ if (isset($_SESSION['domainsAMAccountName'])) {
 
 
             }
-            else {
-              $returndata[$row]="  ".$row." same value";//testing
-            }
+            
           }
         }
 

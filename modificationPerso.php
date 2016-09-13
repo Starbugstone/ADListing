@@ -42,9 +42,9 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
 
 <div class="container-fluid text-center">
   <div class="row content">
-    <div class="col-xs-6 col-xs-offset-3">
+    <div class="col-xs-8 col-xs-offset-2">
 
-      <h1>user modification</h1>
+      <h1>Modification du compte <?php echo ($_SESSION['sAMAccountName']); ?></h1>
       <form id="AdUpdateForm">
         <?php
         foreach ($loggedinInfo as $row => $param){
@@ -52,10 +52,12 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
           $formDisableClass = '';
           if($param['isVisableModify']){
             if (!$param['isModifiable']){$formDisableClass='disabled';}
-            echo "<div class='form-group'>";
-            echo "<label for=\"".$row."\">".$param['description']."</label>";
+            echo "<div class='form-group row'>";
+            echo "<label for=\"".$row."\" class=\"col-sm-3 formLabelAlignRight\">".$param['description']."</label>";
+            echo " <div class=\"col-sm-9\">";
             echo "<input type='text' class='form-control modInput' id=\"".$row."\" name=\"".$row."\" aria-describedby=\"".$row."help\" value=\"".$_SESSION[$row]."\" ".$formDisableClass.">";
             echo "<small id=\"".$row."help\" class='form-control text-muted'>".$param['isModifiableText']."</small>";
+            echo "</div>";
             echo "</div>";
 
           }
@@ -94,13 +96,14 @@ function submitUpdate(){
       //check state, modify logon pannel then hide and show loggedin pannel
       if ($response.state){
         $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Ok ...');
-        console.log($response);
+        window.location.reload();
+
+
 
       }else{
         //set error
         $("#btn-updateAD").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; erreur ...');
         console.log($response.error);
-
       }
     }
   });

@@ -49,10 +49,10 @@ if($ldapconn) {
     //sort the list by CN
 		 usort($adlist, 'sortByCn');
      if($adlist){
-       echo "<p><b>Collegues&nbsp;:</b></p>";
+       echo "<p><b>Equipe&nbsp;:&nbsp;".explodeCN($manager)."</b></p>";
        echo("<ul>");
   		for ($row = 0; $row < count($adlist); $row++) {
-  	    echo("<li><a href=\"detailCompte.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['cn']."</a></li>");
+  	    echo("<li><a href=\"detailCompte.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['cn']."</a></li>");
   		}
   		echo("</ul>");
     }

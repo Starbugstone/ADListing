@@ -71,8 +71,8 @@ if($ldapconn) {
     //3rd pannel
 
     if (isset($data[0]['manager'][0])){
-      $manager = "<a href=\"detailCompte.php?dn=".$data[0]['manager'][0]."\">".explodeCN($data[0]['manager'][0])."</a>";
-      $managerDn = $data[0]['manager'][0];
+      $manager = "<a href=\"detailCompte.php?dn=".removeAccents($data[0]['manager'][0])."\">".explodeCN($data[0]['manager'][0])."</a>";
+      $managerDn = removeAccents($data[0]['manager'][0]);
     }
     else{
       $manager = "Aucun Gestionnaire";
@@ -93,7 +93,7 @@ if($ldapconn) {
     $fax = getOr($data[0]['facsimiletelephonenumber'][0],"Aucun Fax");
     $office = getOr($data[0]['physicaldeliveryofficename'][0],"Aucun Bureau");
     $ville = getOr($data[0]['l'][0],"Aucun ville");
-    $fullDn = $data[0]['dn']; //echo $fullDn;
+    $fullDn = removeAccents($data[0]['dn']); //echo $fullDn;
 
 
   } else {
@@ -164,7 +164,7 @@ if($ldapconn) {
             if($userGroup!=$userGroupError){
               foreach( $userGroup as $grp) {
                 //Get rid of all the excess CN and OU
-                echo ("<p><a href=\"detailGroupe.php?dn=".$grp."\">".explodeCN($grp) . "</a></p>");
+                echo ("<p><a href=\"detailGroupe.php?dn=".removeAccents($grp)."\">".explodeCN($grp) . "</a></p>");
               }
             }else{
               echo("<p>".$userGroupError."</p>");
@@ -191,21 +191,22 @@ if($ldapconn) {
           <p><b>Societe&nbsp;:</b> <?php echo($company); ?></p>
           <p><b>Gestionnaire&nbsp;:</b> <?php echo($manager); ?></p>
 
+          <div id="collegues"><i class='fa fa-spinner fa-pulse'></i></div>
 
           <?php
           if($directReports!=$directReportsError){
-            echo("<p><b>Collaborateurs&nbsp;:</b></p><ul class='colaboList'>");
+            echo("<p><b>Gestionnaire de&nbsp;:</b></p><ul class='colaboList'>");
             foreach( $directReports as $colabo) {
               //Get rid of all the excess CN and OU
               if (blacklistedDistinguishedname($colabo,$refusedOU) == FALSE){
                 $colaboName = explodeCN($colabo);
-                echo ("<li><a href=\"detailCompte.php?dn=".$colabo."\">".$colaboName."</a></li>");
+                echo ("<li><a href=\"detailCompte.php?dn=".removeAccents($colabo)."\">".$colaboName."</a></li>");
               }
             }
             echo("</ul>");
           }
           ?>
-          <div id="collegues"><i class='fa fa-spinner fa-pulse'></i></div>
+
           <div id="GestionGroupes"><i class='fa fa-spinner fa-pulse'></i></div>
         </div>
       </div>

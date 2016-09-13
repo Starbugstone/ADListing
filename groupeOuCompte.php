@@ -2,6 +2,13 @@
 include 'php/config.php';
 include 'php/functions.php';
 
+
+
+
+
+
+
+
 $ldapconn = ldap_connect($ldapserver) or die("Could not connect to LDAP server.");
 
 if($ldapconn) {
@@ -31,6 +38,16 @@ if($ldapconn) {
 
     $result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
     $data = ldap_get_entries($ldapconn, $result);
+
+    /*
+    echo $dn;
+    echo "<p>".mb_detect_encoding($dn)."</p>";
+    echo "<br>";
+    $dn2 = utf8_encode($dn);
+    echo $dn2;
+    echo "<p>".mb_detect_encoding($dn2)."</p>";
+    print_r($data[0]);
+    */
 
     //testing if user or group and construction a URL
     $objectType = $data[0]['objectclass'][1];

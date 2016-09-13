@@ -23,7 +23,7 @@ if($ldapconn) {
   // verify binding and adding link for redirection
   if ($ldapbind) {
     if (isset($_GET['dn'])){
-      $dn=$_GET['dn'];
+      $dn=utf8_encode($_GET['dn']);
       $dn=escapeLdapFilter($dn);
       $filter = "(&(objectCategory=*)(distinguishedname=$dn))";
     }elseif (isset($_GET['id'])){

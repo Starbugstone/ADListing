@@ -3,7 +3,7 @@ include '../php/config.php';
 include '../php/functions.php';
 
 //filtre
-$filter='(&(objectCategory=person)(samaccountname=*)(useraccountcontrol=514))';
+$filter='(&(objectCategory=person)(samaccountname=*)(!(useraccountcontrol=514)))';
 //useraccountcontrol 514 is disactivated
 
 // connect
@@ -31,10 +31,18 @@ if($ldapconn) {
         if (blacklistedDistinguishedname($data[$i]["distinguishedname"][0],$refusedOU) == FALSE){
   				array_push($adlist,array(
             "cn"=>$data[$i]["cn"][0],
-  					"mail"=>getOr($data[$i]["mail"][0],"-"),
-  					"employeeid"=>getOr($data[$i]["employeeid"][0],"-"),
+  					"mail"=>getOr($data[$i]["mail"][0],""),
+  					"employeeid"=>getOr($data[$i]["employeeid"][0],""),
   					"sam"=>$data[$i]["samaccountname"][0],
-						"title"=>getOr($data[$i]["title"][0],"-")
+						"title"=>getOr($data[$i]["title"][0],""),
+						"managedby"=>getOr($data[$i]["manager"][0],""),
+						"description"=>getOr($data[$i]["description"][0],""),
+						"telephone"=>getOr($data[$i]["telephonenumber"][0],""),
+						"mobile"=>getOr($data[$i]["mobile"][0],""),
+						"fax"=>getOr($data[$i]["facsimiletelephonenumber"][0],""),
+						"ville"=>getOr($data[$i]["l"][0],""),
+						"bureau"=>getOr($data[$i]["physicaldeliveryofficename"][0],""),
+						"service"=>getOr($data[$i]["department"][0],"")
   				));
         }
 			}
@@ -42,18 +50,26 @@ if($ldapconn) {
 			ldap_control_paged_result_response($ldapconn, $result, $cookie);
 		}while($cookie !== null && $cookie != '');
 
-		//trying to sort the list, works a bit !!!
-
-		 usort($adlist, 'sortBySam');
+		//Sorting the list
+		usort($adlist, 'sortByCn');
 
 		echo("
-		<table id='tableDesactiver' class='display adTable'>
+		<table id='tableComptes' class='display adTable adTableComplet'>
 			<thead>
 				<tr>
 					<th>Utilisateur</th>
+					<th>samAccountName</th>
 					<th>Mail</th>
 					<th>Fonction</th>
-					<th>ID Salari&eacute;</th>
+					<th>Service</th>
+					<th>Bureau</th>
+					<th>Ville</th>
+					<th>description</th>
+					<th>Gestionnaire</th>
+					<th>ID</th>
+					<th>Telephone</th>
+					<th>Mobile</th>
+					<th>Fax</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -61,10 +77,24 @@ if($ldapconn) {
 
 		for ($row = 0; $row < count($adlist); $row++) {
 			echo("<tr>");
-	    echo("<td><a href=\"detailCompte.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['cn']."</a></td>");
-	    echo("<td>".$adlist[$row]['mail']."</td>");
+	    echo("<td>".$adlist[$row]['cn']."</td>");
+			echo("<td>".$adlist[$row]['sam']."</td>");
+			echo("<td>".$adlist[$row]['mail']."</td>");
 			echo("<td>".$adlist[$row]['title']."</td>");
+			echo("<td>".$adlist[$row]['service']."</td>");
+			echo("<td>".$adlist[$row]['bureau']."</td>");
+			echo("<td>".$adlist[$row]['ville']."</td>");
+			echo("<td>".$adlist[$row]['description']."</td>");
+			if ($adlist[$row]['managedby'] != ""){
+				 echo("<td><a href=\"detailCompte.php?dn=".$adlist[$row]['managedby']."\">".explodeCN($adlist[$row]['managedby'])."</a></td>");
+			}
+			else {
+				echo ("<td></td>");
+			}
 	    echo("<td>".$adlist[$row]['employeeid']."</td>");
+			echo("<td>".$adlist[$row]['telephone']."</td>");
+			echo("<td>".$adlist[$row]['mobile']."</td>");
+			echo("<td>".$adlist[$row]['fax']."</td>");
 			echo("</tr>");
 		}
 		echo("</tbody></table>");

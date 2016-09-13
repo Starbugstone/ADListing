@@ -62,7 +62,7 @@ if($ldapconn) {
 
 		for ($row = 0; $row < count($adlist); $row++) {
 			echo("<tr>");
-	    echo("<td><a href=\"detailCompte.php?id=".$adlist[$row]['sam']."\">".$adlist[$row]['cn']."</a></td>");
+	    echo("<td><a href=\"detailCompte.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['cn']."</a></td>");
 			echo("<td>");
 			echo ($adlist[$row]['mail']);
 			if ($adlist[$row]['mail'] !=""){
@@ -71,7 +71,7 @@ if($ldapconn) {
 			echo ("</td>");
 			echo("<td>".$adlist[$row]['title']."</td>");
 			if ($adlist[$row]['managedby'] != ""){
-				 echo("<td><a href=\"detailCompte.php?dn=".$adlist[$row]['managedby']."\">".explodeCN($adlist[$row]['managedby'])."</a></td>");
+				 echo("<td><a href=\"detailCompte.php?dn=".removeAccents($adlist[$row]['managedby'])."\">".explodeCN($adlist[$row]['managedby'])."</a></td>");
 			}
 			else {
 				echo ("<td></td>");

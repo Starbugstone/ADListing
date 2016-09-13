@@ -48,6 +48,10 @@ table.adTable tr:nth-child(even){
 	background-color:#f3e6ff;
 }
 
+table.adTableComplet{
+  width: 100%;
+}
+
 .panel-body p{
   border-bottom: thin solid #ddd;
   padding-bottom: 3px;
@@ -78,6 +82,11 @@ table.adTable tr:nth-child(even){
 
 .modInput{
   text-align: center;
+}
+
+.formLabelAlignRight{
+  padding-top: 8px;
+  text-align: right;
 }
 
 /* Adding icons and cursor to the table headers */
