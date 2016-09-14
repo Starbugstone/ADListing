@@ -64,6 +64,7 @@ if($ldapconn) {
     if (isset($data[0]['memberof'])){
       $userGroup = $data[0]['memberof'];
       array_shift($userGroup);
+      asort($userGroup);
     }else{
       $userGroup = $userGroupError;
     }
@@ -82,6 +83,7 @@ if($ldapconn) {
     if (isset($data[0]['directreports'])){
       $directReports = $data[0]['directreports'];
       array_shift($directReports);
+      asort($directReports);
     }else{
       $directReports = $directReportsError;
     }

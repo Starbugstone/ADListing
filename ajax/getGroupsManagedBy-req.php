@@ -41,8 +41,8 @@ if($ldapconn) {
 		}while($cookie !== null && $cookie != '');
 
 
-    //sort the list by CN
-		 usort($adlist, 'sortByCn');
+    //sort the list by Sam
+		 usort($adlist, 'sortBySam');
      if($adlist){
        echo "<p><b>Gestionnaire des groupes&nbsp;:</b></p>";
        echo("<ul>");
