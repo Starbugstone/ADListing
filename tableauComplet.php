@@ -23,6 +23,7 @@ if(!isset($_SESSION))
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+<?php include 'favicon.php'; ?>
 <link href="css/ripple.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
 </head>
