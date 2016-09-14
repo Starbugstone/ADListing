@@ -42,7 +42,13 @@ if($ldapconn) {
     $result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
     $data = ldap_get_entries($ldapconn, $result);
 
-    
+    if (!isset($data[0])){
+      //bug in IE with utf-8 encoding
+      $filter = utf8_encode($filter);
+      $result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
+      $data = ldap_get_entries($ldapconn, $result);
+      //echo $filter;
+    }
 
     //testing if user or group and construction a URL
     $objectType = $data[0]['objectclass'][1];

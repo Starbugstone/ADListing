@@ -1,3 +1,6 @@
+<?php
+header("X-UA-Compatible: IE=Edge");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

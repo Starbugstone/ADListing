@@ -1,4 +1,5 @@
 <?php
+header("X-UA-Compatible: IE=Edge");
 include 'php/config.php';
 include 'php/functions.php';
 include 'php/vars.php';
