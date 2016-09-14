@@ -16,7 +16,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-
+<link href="css/ripple.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -51,7 +51,7 @@ $(document).ready(function() {
     constructUserTable('#tableComptes');
 
   });
- 
+
   //taking care of navBar
   $('#nav1').addClass("active");
 
