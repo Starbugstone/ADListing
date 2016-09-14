@@ -1,5 +1,9 @@
 <?php
 header("X-UA-Compatible: IE=Edge");
+if(!isset($_SESSION))
+{
+  session_start();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

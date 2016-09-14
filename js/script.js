@@ -23,6 +23,13 @@ function constructUserTable($tableId){
   });
 }
 
+function getPageName(url) {
+    var index = url.lastIndexOf("/") + 1;
+    var filenameWithExtension = url.substr(index);
+    var filename = filenameWithExtension.split(".")[0]; // <-- added this line
+    return filename;                                    // <-- added this line
+}
+
 //login ajax request
 function submitLogin(){
   var $data = $("#login-nav").serialize();
@@ -92,6 +99,12 @@ $(document).ready(function() {
       var elementSpan = $(".logedinPannelSpan:first",element);
       $(elementSpan).html('');
     });
+    //redirect to index if on mod page
+    var $urlName = window.location.pathname;
+    $urlName = getPageName($urlName);
+    if ($urlName = "modificationPerso"){
+      window.location.replace("index.php");
+    }
   });
 
 });
