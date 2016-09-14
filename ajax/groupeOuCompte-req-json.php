@@ -23,7 +23,7 @@ if($ldapconn) {
   // verify binding and adding link for redirection
   if ($ldapbind) {
     if (isset($_GET['dn'])){
-      $dn=utf8_encode($_GET['dn']);
+      $dn=$_GET['dn'];
       $dn=escapeLdapFilter($dn);
       $filter = "(&(objectCategory=*)(distinguishedname=$dn))";
     }elseif (isset($_GET['id'])){
@@ -42,6 +42,7 @@ if($ldapconn) {
     $result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
     $data = ldap_get_entries($ldapconn, $result);
 
+    
 
     //testing if user or group and construction a URL
     $objectType = $data[0]['objectclass'][1];
