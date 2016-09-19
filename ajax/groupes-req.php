@@ -65,15 +65,14 @@ if($ldapconn) {
 		 for ($row = 0; $row < count($adlist); $row++) {
 
 			 echo("<tr>");
-
-			 echo("<td><a href=\"detailGroupe.php?id=".removeAccents($adlist[$row]['sam'])."\">");
-			 		echo ($adlist[$row]['cn']);
-			 		if ($adlist[$row]['grouptype']<0){
-						echo("<i class='fa fa-shield secIcon' aria-hidden='true' title='Groupe de securite'></i>");
-					}else{
-						echo("<i class='fa fa-users secIcon' aria-hidden='true' title='Groupe de distribution'></i>");
-					}
-
+			 echo("<td>");
+			 echo ("<a href=\"detailGroupe.php?id=".removeAccents($adlist[$row]['sam'])."\">");
+			 if ($adlist[$row]['grouptype']<0){
+				 echo("<i class='fa fa-shield secIcon' aria-hidden='true' title='Groupe de securite'></i>");
+			 }else{
+				 echo("<i class='fa fa-users secIcon' aria-hidden='true' title='Groupe de distribution'></i>");
+			 }
+			 echo ($adlist[$row]['cn']);
 			 echo ("</a></td>");
 			 echo("<td>".$adlist[$row]['number']."</td>");
 			 echo("<td>");

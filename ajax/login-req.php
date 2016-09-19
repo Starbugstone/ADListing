@@ -35,7 +35,17 @@ if ( isset($_POST['sAMAccountName']) ) {
       $result = ldap_search($ldapconn,$ldaptree,$filter);
       $data = ldap_get_entries($ldapconn,$result);
 
+
+
       $_SESSION['responseName'] = $returndata['responseName'] = $data[0]['displayname'][0];
+
+      if(isset($ldapExtraAdminGroup) && $ldapExtraAdminGroup!=""){
+        if (in_array($ldapExtraAdminGroup,$data[0]['memberof'])){
+          $_SESSION['ldapExtraAdminGroup'] = TRUE;
+        }
+      }
+
+
       //get all the info from our vars.php file then store in session to not charge AD requests just for the menu
       foreach ($loggedinInfo as $row => $param) {
         //add extra element to array for return
@@ -68,13 +78,10 @@ if ( isset($_POST['sAMAccountName']) ) {
         $filter = "(&(objectCategory=person)(samaccountname=$sam)(!(useraccountcontrol=514)))";
         $result = ldap_search($ldapconn,$ldaptree, $filter);
         $data = ldap_get_entries($ldapconn, $result);
-        if(isset($data[0]["lockouttime"][0]) && $data[0]["lockouttime"][0]>0){
-          //if account is locked out. Get timestamp
-          $fileTime = $data[0]["lockouttime"][0];
-          $winSecs       = (int)($fileTime / 10000000); // divide by 10 000 000 to get seconds
-          $unixTimestamp = ($winSecs - 11644473600); // 1.1.1600 -> 1.1.1970 difference in seconds
-          setlocale (LC_TIME, 'fr_FR.utf8','fra');
-          $returndata['error'] = '<b>compte verouillé : </b>' .strftime("%A %d %B %Y %H:%M:%S",$unixTimestamp);
+
+        $lockout = checkLogoutTime($data);
+        if ($lockout != '0'){
+          $returndata['error'] = '<b>Mauvais Mot de passe, compte verouillé depuis : </b>' .$lockout;
         }else if(isset($data[0])){
           //got user and not locked out so bad password
           $returndata['error'] =  "Mauvais Mot de passe";

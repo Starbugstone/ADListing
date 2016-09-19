@@ -41,6 +41,7 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
 <?php include 'favicon.php'; ?>
 <link href="css/ripple.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
+<link href="css/print.css" rel="stylesheet">
 </head>
 <body>
 <?php include 'navBar.php'; ?>

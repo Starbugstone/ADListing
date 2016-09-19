@@ -112,6 +112,7 @@ if($ldapconn) {
 <?php include 'favicon.php'; ?>
 <link href="css/ripple.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
+<link href="css/print.css" rel="stylesheet">
 </head>
 <body>
 <?php include 'navBar.php'; ?>
@@ -142,7 +143,9 @@ if($ldapconn) {
             <?php
             if($memberNoError){
               foreach ($members as $member) {
-                echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn=\"".removeAccents($member)."\"></i><a class='varLink' href=\"groupeOuCompte.php?dn=".removeAccents($member)."\">".explodeCN($member)."</a></p>");
+                if(blacklistedDistinguishedname($member, $refusedOU) == FALSE){
+                  echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn=\"".removeAccents($member)."\"></i><a class='varLink' href=\"groupeOuCompte.php?dn=".removeAccents($member)."\">".explodeCN($member)."</a></p>");
+                }
               }
             }
             else{
@@ -187,7 +190,7 @@ $(document).ready(function() {
         $linkElementHref = $linkElementHref.replace("groupeOuCompte.php?dn","detailGroupe.php?dn");
       }else{
         //error, need to add extra on error handeling
-        console.log(result['errorMessage']);
+        //console.log(result['errorMessage']);
         $($element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-question-circle-o");
         $($element).prop('title', 'Erreur');
       }

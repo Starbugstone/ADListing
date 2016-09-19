@@ -66,7 +66,7 @@ if($ldapconn) {
 			echo("<td>");
 			echo ($adlist[$row]['mail']);
 			if ($adlist[$row]['mail'] !=""){
-				echo ("<a href=\"mailto:".$adlist[$row]['mail']."\"><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>");
+				echo ("<a href=\"mailto:".$adlist[$row]['mail']."\"><i class='fa fa-envelope-o secIcon noPrint' aria-hidden='true' title='Envoyer Mail'></i></a>");
 			}
 			echo ("</td>");
 			echo("<td>".$adlist[$row]['title']."</td>");

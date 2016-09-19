@@ -77,10 +77,7 @@ if($ldapconn) {
     if (isset($data[0]['memberof'])){
       $userGroup = $data[0]['memberof'];
       array_shift($userGroup);
-      debugToConsole($userGroup);
-      debugToConsole("------");
       asort($userGroup);
-      debugToConsole($userGroup);
     }else{
       $userGroup = $userGroupError;
     }
@@ -141,6 +138,7 @@ if($ldapconn) {
 <?php include 'favicon.php'; ?>
 <link href="css/ripple.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
+<link href="css/print.css" rel="stylesheet">
 </head>
 <body>
 <?php include 'navBar.php'; ?>
@@ -168,6 +166,16 @@ if($ldapconn) {
           ?>
           <p><b>Description&nbsp;:</b> <span id='description'><?php echo($description); ?></span><button class='btn clipBtn' data-clipboard-target='#description' title="Copier description"><span class="glyphicon glyphicon-copy"></span></button></p>
 
+          <?php
+          //Zone Admin ----------------------------------------------------
+          if(CheckIfAdmin()){
+            $lockout = checkLogoutTime($data);
+            if ($lockout != '0'){
+              echo '<div class="alert alert-danger noPrint" role="alert"><p><i class="fa fa-exclamation-triangle" aria-hidden="true" title="Compte verouillé au dernier connexion. Aucun connexion reussi depuis"></i> <b>compte verouillé depuis : </b>' .$lockout.'</p></div>';
+            }
+          }
+          // fin zone admin -----------------------------------------------
+          ?>
         </div>
       </div>
     </div>
@@ -181,10 +189,27 @@ if($ldapconn) {
 
             <?php
             if($userGroup!=$userGroupError){
+              $userGroupExportArray = array();
               foreach( $userGroup as $grp) {
-                //Get rid of all the excess CN and OU
-                echo ("<p><a href=\"detailGroupe.php?dn=".removeAccents($grp)."\">".explodeCN($grp) . "</a></p>");
+                //do not list refused OU
+                if(blacklistedDistinguishedname($grp, $refusedOU) == FALSE){
+                  //Get rid of all the excess CN and OU
+                  echo ("<p><a href=\"detailGroupe.php?dn=".removeAccents($grp)."\">".explodeCN($grp) . "</a></p>");
+                  array_push($userGroupExportArray, explodeCN($grp) );
+                }
               }
+              //Zone Admin ----------------------------------------------------
+              if(CheckIfAdmin()){
+                //echo '<span id="userGroupExportArray" aria-label="';
+                //echo implode(",",$userGroupExportArray);
+                //echo '"></span>';
+                echo '<div class="alert alert-info noPrint" role="alert">';
+                echo '<p>copier liste des groups <button class="btn clipBtnAdmin" data-clipboard-text="';
+                echo implode(",\n",$userGroupExportArray);
+                echo '" title="Copier l\'array des groupes"><span class="glyphicon glyphicon-copy"></span></button></p>';
+                echo '</div>';
+              }
+              // fin zone admin -----------------------------------------------
             }else{
               echo("<p>".$userGroupError."</p>");
             }
@@ -249,6 +274,14 @@ $("#GestionGroupes").load("ajax/getGroupsManagedBy-req.php?user=<?php echo(rawur
 
 var clipboard = new Clipboard('.clipBtn');
 clipboard.on('success', function(e) {
+    //clear the selected text. Looks ugly
+    e.clearSelection();
+    //console.info('Action:', e.action);
+    //console.info('Text:', e.text);
+});
+
+var clipboardAdmin = new Clipboard('.clipBtnAdmin');
+clipboardAdmin.on('success', function(e) {
     //clear the selected text. Looks ugly
     e.clearSelection();
     //console.info('Action:', e.action);

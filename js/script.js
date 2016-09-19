@@ -102,7 +102,7 @@ $(document).ready(function() {
     //redirect to index if on mod page
     var $urlName = window.location.pathname;
     $urlName = getPageName($urlName);
-    if ($urlName = "modificationPerso"){
+    if ($urlName == "modificationPerso"){
       window.location.replace("index.php");
     }
   });

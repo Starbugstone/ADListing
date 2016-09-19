@@ -29,12 +29,12 @@ if($ldapconn) {
 			$data = ldap_get_entries($ldapconn, $result);
 
 			for ($i=0; $i<$data["count"]; $i++) {
-
+				if(blacklistedDistinguishedname($data[0]['distinguishedname'][0], $refusedOU) == FALSE){
   				array_push($adlist,array(
   					"sam"=>$data[$i]["samaccountname"][0],
 						"cn"=>$data[0]['cn'][0]
   				));
-
+				}
 			}
 
 			ldap_control_paged_result_response($ldapconn, $result, $cookie);

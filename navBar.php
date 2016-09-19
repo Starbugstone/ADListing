@@ -22,7 +22,11 @@ include_once 'php/vars.php';
       <ul class="nav navbar-nav">
         <li id="nav1"><a href="index.php">Comptes</a></li>
         <li id="nav2"><a href="groupes.php">Groupes</a></li>
-        <li id="nav3"><a href="desactiver.php">Desactiver</a></li>
+        <?php
+        if(CheckIfAdmin()){
+          echo '<li id="nav3"><a href="desactiver.php">Desactiver</a></li>';
+        }
+        ?>
         <li id="nav4"><a href="tableauComplet.php">Tableau detail</a></li>
       </ul>
 
