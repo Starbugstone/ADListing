@@ -102,4 +102,26 @@ function removeSpaces($str=''){
   return $str;
 }
 
+function CheckIfAdmin(){
+  if (isset($_SESSION['ldapExtraAdminGroup']) && $_SESSION['ldapExtraAdminGroup'] == TRUE) {
+    return TRUE;
+  }
+  else{
+    return FALSE;
+  }
+}
+
+function checkLogoutTime($data){
+  if(isset($data[0]["lockouttime"][0]) && $data[0]["lockouttime"][0]>0){
+    //if account is locked out. Get timestamp
+    $fileTime = $data[0]["lockouttime"][0];
+    $winSecs       = (int)($fileTime / 10000000); // divide by 10 000 000 to get seconds
+    $unixTimestamp = ($winSecs - 11644473600); // 1.1.1600 -> 1.1.1970 difference in seconds
+    setlocale (LC_TIME, 'fr_FR.utf8','fra');
+    return strftime("%A %d %B %Y %H:%M:%S",$unixTimestamp);
+  }else{
+    return '0';
+  }
+}
+
 ?>

@@ -20,7 +20,7 @@ anso reserved are : sAMAccountName, domainsAMAccountName and password.
   'isModifiableText' => '***' Text to show on modify page.
 )
 
-do not allow users to modify 
+do not allow users to modify
 
 ------------------------------------*/
 $loggedinInfo = array(
@@ -186,7 +186,7 @@ $loggedinInfo = array(
     'ldapName' => 'description',
     'ldapNameExplodeCN' => '0',
     'description' => 'Commentaire',
-    'ldapErrorVal' => '',
+    'ldapErrorVal' => 'Aucun Commentaire',
     'isLink' => '0',
     'linkPage' => '',
     'linkPageLdapVar' => '',

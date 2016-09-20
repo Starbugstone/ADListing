@@ -1,4 +1,4 @@
-<? php
+<?php
 header("X-UA-Compatible: IE=Edge");
 if(!isset($_SESSION))
 {
