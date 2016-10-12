@@ -50,6 +50,16 @@ function blacklistedDistinguishedname($distName, $refused=""){
   return $blacklisted;
 }
 
+//pass an array of CN (like children / directreporters) and return an array with the blacklistedDistinguishedname filtered out
+function nonBlacklistedDistunguishednameArray($array,$refused=""){
+  $cleanArray = array();
+  foreach ($array as $dn) {
+    if(blacklistedDistinguishedname($dn,$refused)==FALSE){
+      array_push($cleanArray,$dn);
+    }
+  }
+  return $cleanArray;
+}
 
 function escapeLdapFilter($str = '') {
 

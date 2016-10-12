@@ -109,7 +109,7 @@ if($ldapconn) {
     $office = getOr($data[0]['physicaldeliveryofficename'][0],"Aucun Bureau");
     $ville = getOr($data[0]['l'][0],"Aucun ville");
     $fullDn = removeAccents($data[0]['dn']); //echo $fullDn;
-
+    $urlOrganigramme = "organigramme.php?id=".$samaccountname;
 
   } else {
     echo "LDAP bind failed...";
@@ -165,10 +165,11 @@ if($ldapconn) {
           }
           ?>
           <p><b>Description&nbsp;:</b> <span id='description'><?php echo($description); ?></span><button class='btn clipBtn' data-clipboard-target='#description' title="Copier description"><span class="glyphicon glyphicon-copy"></span></button></p>
-
+          <p><i class="fa fa-sitemap" aria-hidden="true"></i>&nbsp;<a href="<?php echo($urlOrganigramme); ?>"><b>Organigramme</b></a></p>
           <?php
           //Zone Admin ----------------------------------------------------
           if(CheckIfAdmin()){
+            echo('<p><b>distinguishedname&nbsp;:</b><br>'.$fullDn.'</p>');
             $lockout = checkLogoutTime($data);
             if ($lockout != '0'){
               echo '<div class="alert alert-danger noPrint" role="alert"><p><i class="fa fa-exclamation-triangle" aria-hidden="true" title="Compte verouillé au dernier connexion. Aucun connexion reussi depuis"></i> <b>compte verouillé depuis : </b>' .$lockout.'</p></div>';

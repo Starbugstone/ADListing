@@ -94,6 +94,42 @@ table.adTableComplet{
   text-align: right;
 }
 
+/*Organigramme*/
+#chart-container{
+  width: 100%;
+  height: 80vh; /*vh=ViewHeight*/
+}
+#chart-container .orgchart{
+  height: 100%;
+  width: 100%;
+  background-image: none !important;
+}
+
+.orgchart .second-menu-icon {
+  transition: opacity .5s;
+  /*opacity: 0;*/
+  right: -5px;
+  top: -5px;
+  z-index: 2;
+  color: rgba(68, 157, 68, 0.5);
+  font-size: 18px;
+  position: absolute;
+}
+
+.orgchart .node .second-menu {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: -120px;
+  /*border-radius: 35px;*/
+  box-shadow: 0 0 10px 1px #999;
+  background-color: #fff;
+  z-index: 99;
+  width: 110px;
+  padding-top: 8px;
+}
+
+
 /* Adding icons and cursor to the table headers */
 .sorting_desc, .sorting_asc, .sorting{
   cursor: pointer;
