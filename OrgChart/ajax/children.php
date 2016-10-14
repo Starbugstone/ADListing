@@ -49,9 +49,10 @@ if($ldapconn) {
 
     //Grabbing children
     if (isset($data[0]['directreports'])){
+
       //do a foreach, construct array and check blacklistedDistinguishedname
       $directReports = $data[0]['directreports'];
-      //array_shift($directReports);
+      array_shift($directReports);
       $directReports = nonBlacklistedDistunguishednameArray($directReports,$refusedOU); //eliminating restricted OU's
       asort($directReports);
 
@@ -85,9 +86,9 @@ if($ldapconn) {
           //need to test relationship in AD for the relationship code
           //checking for children
           if (isset($data[0]['directreports'])){
-            //$children = $data[0]['directreports'];
             $children = $data[0]['directreports'];
-            //array_shift($children);
+            array_shift($children);
+            $children = nonBlacklistedDistunguishednameArray($children,$refusedOU);
             //asort($directReports);
 
             //taking care of the children
@@ -96,13 +97,20 @@ if($ldapconn) {
             }
           }
 
-          //$rowArray['id']=$count;
+          //check for class, see config.php for the group membership
+          $orgChartClass=[FALSE,""];
+          if (isset($data[0]['memberof'][0])){
+            $orgChartClass = getOrgChartClass($data[0]['memberof'],$orgChartColors);
+          }
+
+          $rowArray['className']=$orgChartClass[1];
+
           $rowArray['name']=getOr($data[0]['displayname'][0], "Aucun Nom");
           $rowArray['title']=getOr($data[0]['title'][0],"Aucun Titre");
           $rowArray['relationship']=$relationship;
           $rowArray['DN']=removeAccents($data[0]['dn']);
           $rowArray['managerDn']=removeAccents($data[0]['manager'][0]);
-          //$rowArray['test']=$relationship;
+
           array_push($arr['children'],$rowArray);
 
           //$arr['children']['id':$count,'name':$test1,'title':$test2,'relationship':'111'];
@@ -111,9 +119,9 @@ if($ldapconn) {
       }
     }
 
-
     //return our json
     echo json_encode($arr);
+
 
   } else{
     $arr['isError']="1";

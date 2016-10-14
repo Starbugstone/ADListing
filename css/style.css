@@ -129,6 +129,10 @@ table.adTableComplet{
   padding-top: 8px;
 }
 
+/* Custom colors for orgchart */
+.orgchart .cadreAiderSante .title {
+  background-color: #5d1bc6!important;
+}
 
 /* Adding icons and cursor to the table headers */
 .sorting_desc, .sorting_asc, .sorting{

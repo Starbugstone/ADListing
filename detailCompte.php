@@ -96,6 +96,7 @@ if($ldapconn) {
     if (isset($data[0]['directreports'])){
       $directReports = $data[0]['directreports'];
       array_shift($directReports);
+      $directReports = nonBlacklistedDistunguishednameArray($directReports,$refusedOU);
       asort($directReports);
     }else{
       $directReports = $directReportsError;
@@ -239,7 +240,7 @@ if($ldapconn) {
           <div id="collegues"><i class='fa fa-spinner fa-pulse'></i></div>
 
           <?php
-          if($directReports!=$directReportsError){
+          if($directReports!=$directReportsError AND count($directReports)>0 ){
             echo("<p><b>Gestionnaire de&nbsp;:</b></p><ul class='colaboList'>");
             foreach( $directReports as $colabo) {
               //Get rid of all the excess CN and OU

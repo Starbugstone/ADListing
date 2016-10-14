@@ -54,6 +54,7 @@ if($ldapconn) {
     $displayName = getOr($data[0]['displayname'][0], "Aucun Nom");
     $title = getOr($data[0]['title'][0],"Aucun Titre");
     $fullDn = removeAccents($data[0]['dn']);
+    $nomPrenom = getOr($data[0]['sn'][0],"")." ".getOr($data[0]['givenname'][0],"");
 
     if (isset($data[0]['manager'][0]) AND blacklistedDistinguishedname($data[0]['manager'][0],$refusedOU) == FALSE){
       $manager = explodeCN($data[0]['manager'][0]);
@@ -113,14 +114,13 @@ if($ldapconn) {
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">
-<title>Compte - <?php echo($nomPrenom); ?></title>
+<title>Organigramme - <?php echo($nomPrenom); ?></title>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
-
 <?php include 'favicon.php'; ?>
 <link href="css/style.css" rel="stylesheet">
 <link href="OrgChart/css/jquery.orgchart.css" rel="stylesheet">
@@ -150,6 +150,15 @@ if($ldapconn) {
 <script>
   // Create the orgchart
   var datasource = {
+    <?php
+    //check for class, see config.php for the group membership
+    $orgChartClass=[FALSE,""];
+    if (isset($data[0]['memberof'][0])){
+      $orgChartClass = getOrgChartClass($data[0]['memberof'],$orgChartColors);
+    }
+
+    echo("'className':'".$orgChartClass[1]."',");
+    ?>
     'relationship': '<?php echo($relationship); ?>',
     'name': '<?php echo($displayName); ?>',
     'title': '<?php echo($title); ?>',

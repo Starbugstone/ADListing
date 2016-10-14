@@ -53,6 +53,7 @@ if($ldapconn) {
     //1st pannel
     $samaccountname = $data[0]['samaccountname'][0];
     $cn = getOr($data[0]['cn'][0],$samaccountname);
+    $fullDn = $data[0]['dn'];
     //$mail = getOr($data[0]['mail'][0],"Aucun mail");
     if (isset($data[0]['mail'][0])){
       $mail = $data[0]['mail'][0]."<a href=\"mailto:".$data[0]['mail'][0]."\"><i class='fa fa-envelope-o secIcon' aria-hidden='true' title='Envoyer Mail'></i></a>";
@@ -129,6 +130,13 @@ if($ldapconn) {
           <p><b>Mail&nbsp;:</b> <?php echo($mail); ?></p>
           <p><b>Gestionnaire&nbsp;:</b> <?php echo($managedby); ?></p>
           <p><b>Description&nbsp;:</b> <?php echo($description); ?></p>
+          <?php
+          //Zone Admin ----------------------------------------------------
+          if(CheckIfAdmin()){
+            echo('<p><b>distinguishedname&nbsp;:</b><br>'.$fullDn.'</p>');
+          }
+          // fin zone admin -----------------------------------------------
+          ?>
         </div>
       </div>
     </div>

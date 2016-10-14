@@ -11,7 +11,7 @@ $ldaptree = ''; //AD Root
 $ldapdomain = ''; //used in the form 'domain\user'
 
 //group name of admins who will have extra buttons defined. Has to be the full CN Name found in the memberof dump
-$ldapExtraAdminGroup = '';
+$ldapExtraAdminGroup = 'true';
 
 //should we bypass the user rights and use admin rights.
 //need to do this if you want to allow users to update more sensitive information
@@ -27,5 +27,12 @@ $refusedOU = [
   'CN=Microsoft Exchange System Objects',
   'OU=Microsoft Exchange Security Groups'
 ]
+
+//Color coding Organizational chart
+//We will color code members of diffrent groups. need to have the full distinguished name of the group followed by a class name
+//if the class doesn't exist, need to add it in style.css
+$orgChartColors = [
+  ["CN=Groupe,OU=GroupeOU,DC=domaine,DC=com","css class"]
+];
 
 ?>

@@ -79,6 +79,15 @@ if($ldapconn) {
       }
 
     }
+
+    //check for class, see config.php for the group membership
+    $orgChartClass=[FALSE,""];
+    if (isset($data[0]['memberof'][0])){
+      $orgChartClass = getOrgChartClass($data[0]['memberof'],$orgChartColors);
+    }
+
+    $arr['className']=$orgChartClass[1];
+
     $arr['name']=getOr($data[0]['displayname'][0], "Aucun Nom");
     $arr['title']=getOr($data[0]['title'][0],"Aucun Titre");
     $arr['relationship']=$relationshipParent;
@@ -91,8 +100,8 @@ if($ldapconn) {
     //get rid of the first line
     if (isset($data[0]['directreports'])){
       $directReports = $data[0]['directreports'];
-      $directReports = nonBlacklistedDistunguishednameArray($directReports,$refusedOU); //eliminating restricted OU's
       array_shift($directReports);
+      $directReports = nonBlacklistedDistunguishednameArray($directReports,$refusedOU); //eliminating restricted OU's
       asort($directReports);
 
       if(count($directReports)>0){
@@ -123,13 +132,22 @@ if($ldapconn) {
               unset($children);
               $children = $data[0]['directreports'];
               array_shift($children);
-              //asort($directReports);
+              $children = nonBlacklistedDistunguishednameArray($children,$refusedOU);
+
 
               //taking care of the children
               if(count($children)>0){
                 $relationshipSib[2]="1";
               }
             }
+
+            //check for class, see config.php for the group membership
+            $orgChartClass=[FALSE,""];
+            if (isset($data[0]['memberof'][0])){
+              $orgChartClass = getOrgChartClass($data[0]['memberof'],$orgChartColors);
+            }
+
+            $rowArray['className']=$orgChartClass[1];
 
             $rowArray['name']=getOr($data[0]['displayname'][0], "Aucun Nom");
             $rowArray['title']=getOr($data[0]['title'][0],"Aucun Titre");

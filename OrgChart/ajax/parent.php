@@ -77,6 +77,15 @@ if($ldapconn) {
 
     }
 
+    //check for class, see config.php for the group membership
+    $orgChartClass=[FALSE,""];
+    if (isset($data[0]['memberof'][0])){
+      $orgChartClass = getOrgChartClass($data[0]['memberof'],$orgChartColors);
+    }
+
+    $arr['className']=$orgChartClass[1];
+
+
     $arr['name']=getOr($data[0]['displayname'][0], "Aucun Nom");
     $arr['title']=getOr($data[0]['title'][0],"Aucun Titre");
     $arr['relationship']=$relationship;

@@ -85,6 +85,7 @@ if($ldapconn) {
               if (isset($data[0]['directreports'])){
                 $children = $data[0]['directreports'];
                 array_shift($children);
+                $children = nonBlacklistedDistunguishednameArray($children,$refusedOU);
                 //asort($directReports);
 
                 //taking care of the children
@@ -92,6 +93,14 @@ if($ldapconn) {
                   $relationship[2]="1";
                 }
               }
+
+              //check for class, see config.php for the group membership
+              $orgChartClass=[FALSE,""];
+              if (isset($data[0]['memberof'][0])){
+                $orgChartClass = getOrgChartClass($data[0]['memberof'],$orgChartColors);
+              }
+
+              $rowArray['className']=$orgChartClass[1];
 
               $rowArray['name']=getOr($data[0]['displayname'][0], "Aucun Nom");
               $rowArray['title']=getOr($data[0]['title'][0],"Aucun Titre");
