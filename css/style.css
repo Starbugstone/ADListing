@@ -116,23 +116,28 @@ table.adTableComplet{
   position: absolute;
 }
 
-.orgchart .node .second-menu {
-  display: none;
+.orgchart .closeNodeIcon {
+  transition: opacity .5s;
+  /*opacity: 0;*/
+  left: -5px;
+  top: -5px;
+  z-index: 2;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 18px;
   position: absolute;
-  top: 0;
-  right: -120px;
-  /*border-radius: 35px;*/
-  box-shadow: 0 0 10px 1px #999;
-  background-color: #fff;
-  z-index: 99;
-  width: 110px;
-  padding-top: 8px;
 }
+
+
 
 /* Custom colors for orgchart */
 .orgchart .cadreAiderSante .title {
   background-color: #5d1bc6!important;
 }
+
+.orgchart .medecinsAiderSante .title{
+  background-color: #ffc466!important;
+}
+
 
 /* Adding icons and cursor to the table headers */
 .sorting_desc, .sorting_asc, .sorting{

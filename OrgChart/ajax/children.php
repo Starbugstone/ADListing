@@ -54,13 +54,13 @@ if($ldapconn) {
       $directReports = $data[0]['directreports'];
       array_shift($directReports);
       $directReports = nonBlacklistedDistunguishednameArray($directReports,$refusedOU); //eliminating restricted OU's
-      asort($directReports);
+      natcasesort($directReports);
 
       //taking care of the siblings
       if(count($directReports)>1){
         $relationshipOrig[1]="1";
       }
-
+      $arr['test'] = $directReports;
       foreach ($directReports as $dn) {
         $relationship = $relationshipOrig;
 

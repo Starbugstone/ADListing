@@ -187,6 +187,7 @@ if($ldapconn) {
     'nodeContent': 'title',
     'pan': true,
     'zoom': true,
+    'toggleSiblingsResp': true,
     'createNode': function($node, data) {
       //add an "i" icon to return to main info page
       var secondMenuIcon = $('<i>', {
@@ -198,7 +199,15 @@ if($ldapconn) {
           }
         }
       });
+      //Add an icon to close the node
+      var closeNodeIcon = $('<i>',{
+        'class' : 'fa fa-times-circle closeNodeIcon',
+        click:function(){
+          $('#chart-container').orgchart('removeNodes', $node);
+        }
+      });
       $node.append(secondMenuIcon);
+      $node.append(closeNodeIcon);
     }
   });
 

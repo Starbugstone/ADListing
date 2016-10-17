@@ -59,7 +59,7 @@ if($ldapconn) {
         $directReports = $data[0]['directreports'];
         $directReports = nonBlacklistedDistunguishednameArray($directReports,$refusedOU); //eliminating restricted OU's
         array_shift($directReports);
-        asort($directReports);
+        natcasesort($directReports);
 
         if(count($directReports)>0){
 

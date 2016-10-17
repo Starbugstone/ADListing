@@ -77,7 +77,7 @@ if($ldapconn) {
     if (isset($data[0]['memberof'])){
       $userGroup = $data[0]['memberof'];
       array_shift($userGroup);
-      asort($userGroup);
+      natcasesort($userGroup);
     }else{
       $userGroup = $userGroupError;
     }
@@ -97,7 +97,7 @@ if($ldapconn) {
       $directReports = $data[0]['directreports'];
       array_shift($directReports);
       $directReports = nonBlacklistedDistunguishednameArray($directReports,$refusedOU);
-      asort($directReports);
+      natcasesort($directReports);
     }else{
       $directReports = $directReportsError;
     }

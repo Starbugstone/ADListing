@@ -74,7 +74,8 @@ if($ldapconn) {
       $members = $data[0]['member'];
       array_shift($members); //get rid of dead line
       $memberCount = "( ".$data[0]['member']['count']." )";
-      asort($members); //alphanum sorting
+      //asort($members); //alphanum sorting
+      natcasesort($members);
       $memberNoError = TRUE;
 
     }
