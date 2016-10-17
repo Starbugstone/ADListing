@@ -35,4 +35,8 @@ $orgChartColors = [
   ["CN=Groupe,OU=GroupeOU,DC=domaine,DC=com","css class"]
 ];
 
+//Custom AD Field used for our doctors
+$customRPPSField = true;
+
+
 ?>

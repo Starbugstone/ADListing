@@ -65,7 +65,7 @@ if($ldapconn) {
     }
     $Matricule = getOr($data[0]["employeeid"][0],"");
     $description = getOr($data[0]["description"][0],"Pas de description");
-    $RPPS = getOr($data[0]["rpps"][0],"");
+    if ($customRPPSField){$RPPS = getOr($data[0]["rpps"][0],"");}
     if ($data[0]["useraccountcontrol"][0]==514){
       $accountState = "<p><span class='glyphicon glyphicon-warning-sign secIcon'></span>Compte Desactive</p>";
     }else{
@@ -161,7 +161,7 @@ if($ldapconn) {
           <p><b>Mail&nbsp;:</b> <span id='e-mail'><?php echo($mail); ?></span><?php echo($mail_link); ?><button class='btn clipBtn' data-clipboard-target='#e-mail' title="Copier Mail"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Matricule&nbsp;:</b> <span id='Matricule'><?php echo($Matricule); ?></span><button class='btn clipBtn' data-clipboard-target='#Matricule' title="Copier Matricule"><span class="glyphicon glyphicon-copy"></span></button></p>
           <?php
-          if ($RPPS != ""){
+          if ($customRPPSField AND $RPPS != ""){
           echo("<p><b>RPPS&nbsp;:</b> <span id='RPPS'>".$RPPS."</span><button class='btn clipBtn' data-clipboard-target='#RPPS' title='Copier RPPS'><span class='glyphicon glyphicon-copy'></span></button></p>");
           }
           ?>
