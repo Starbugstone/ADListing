@@ -32,7 +32,7 @@ if($ldapconn) {
 			for ($i=0; $i<$data["count"]; $i++) {
         if (blacklistedDistinguishedname($data[$i]["distinguishedname"][0],$refusedOU) == FALSE){
   				array_push($adlist,array(
-            "cn"=>$data[$i]["cn"][0],
+            "displayname"=>getOr($data[$i]["displayname"][0],$data[$i]["cn"][0]),
   					"mail"=>getOr($data[$i]["mail"][0],""),
   					"employeeid"=>getOr($data[$i]["employeeid"][0],""),
   					"sam"=>$data[$i]["samaccountname"][0],
@@ -47,12 +47,12 @@ if($ldapconn) {
 
 
     //sort the list by CN
-		 usort($adlist, 'sortByCn');
+		 usort($adlist, 'sortBydisplayname');
      if($adlist){
        echo "<p><b>Equipe&nbsp;:&nbsp;".explodeCN($manager)."</b></p>";
        echo("<ul>");
   		for ($row = 0; $row < count($adlist); $row++) {
-  	    echo("<li><a href=\"detailCompte.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['cn']."</a></li>");
+  	    echo("<li><a href=\"detailCompte.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['displayname']."</a></li>");
   		}
   		echo("</ul>");
     }

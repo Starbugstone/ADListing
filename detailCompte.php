@@ -50,6 +50,13 @@ if($ldapconn) {
 
     //grab all our required info
     //1st pannel
+    if (isset($data[0]['thumbnailphoto'][0])){
+      $thumbnailRaw = $data[0]['thumbnailphoto'][0];
+      $thumbnailImg = '<img class="thumb" src="data:image/jpeg;base64,'. base64_encode($thumbnailRaw).'" /><br>';
+    }else{
+      $thumbnailRaw='';
+      $thumbnailImg='<img class="thumb" src="img/user-icon.png" /><br>';
+    }
     $displayName = getOr($data[0]['displayname'][0], "Aucun Nom");
     $samaccountname = getOr($data[0]['samaccountname'][0], "Aucun nom de compte");
     $nom = getOr($data[0]['sn'][0], "Aucun nom de famille");
@@ -154,6 +161,7 @@ if($ldapconn) {
         </div>
         <div class="panel-body panelIcons">
           <?php echo $accountState; ?>
+          <?php echo $thumbnailImg;?>
           <p><b>Login&nbsp;:</b> <span id='login'><?php echo($samaccountname); ?></span><button class='btn clipBtn' data-clipboard-target='#login' title="Copier Login"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Nom&nbsp;:</b> <span id='Nom'><?php echo($nom); ?></span><button class='btn clipBtn' data-clipboard-target='#Nom' title="Copier Nom"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Prenom&nbsp;:</b> <span id='Prenom'><?php echo($prenom); ?></span><button class='btn clipBtn' data-clipboard-target='#Prenom' title="Copier Prenom"><span class="glyphicon glyphicon-copy"></span></button></p>
@@ -175,6 +183,10 @@ if($ldapconn) {
             if ($lockout != '0'){
               echo '<div class="alert alert-danger noPrint" role="alert"><p><i class="fa fa-exclamation-triangle" aria-hidden="true" title="Compte verouillé au dernier connexion. Aucun connexion reussi depuis"></i> <b>compte verouillé depuis : </b>' .$lockout.'</p></div>';
             }
+          }
+          if(CheckIfRH()){
+            echo('<p><a href="modificationRH.php?id='.$samaccountname.'" class="btn btn-primary" >Modifier compte</a></p>');
+
           }
           // fin zone admin -----------------------------------------------
           ?>

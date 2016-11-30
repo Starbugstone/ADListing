@@ -21,6 +21,9 @@ function explodeCN($cn){
 function sortByCn($a, $b) {
    return strcmp($a['cn'], $b['cn']);
  }
+ function sortBydisplayname($a, $b) {
+    return strcmp($a['displayname'], $b['displayname']);
+  }
 
 function sortBySam($a, $b) {
   return strcmp($a['sam'], $b['sam']);
@@ -114,6 +117,15 @@ function removeSpaces($str=''){
 
 function CheckIfAdmin(){
   if (isset($_SESSION['ldapExtraAdminGroup']) && $_SESSION['ldapExtraAdminGroup'] == TRUE) {
+    return TRUE;
+  }
+  else{
+    return FALSE;
+  }
+}
+
+function CheckIfRH(){
+  if (isset($_SESSION['ldapRHAdminGroup']) && $_SESSION['ldapRHAdminGroup'] == TRUE) {
     return TRUE;
   }
   else{

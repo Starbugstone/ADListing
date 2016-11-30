@@ -30,7 +30,8 @@ if($ldapconn) {
 			for ($i=0; $i<$data["count"]; $i++) {
         if (blacklistedDistinguishedname($data[$i]["distinguishedname"][0],$refusedOU) == FALSE){
   				array_push($adlist,array(
-            "cn"=>$data[$i]["cn"][0],
+            //"cn"=>$data[$i]["cn"][0],
+						"displayname"=>getOr($data[$i]["displayname"][0],$data[$i]["cn"][0]),
   					"mail"=>getOr($data[$i]["mail"][0],""),
   					"employeeid"=>getOr($data[$i]["employeeid"][0],""),
   					"sam"=>$data[$i]["samaccountname"][0],
@@ -44,7 +45,7 @@ if($ldapconn) {
 		}while($cookie !== null && $cookie != '');
 
 		//Sorting the list
-		usort($adlist, 'sortByCn');
+		//usort($adlist, 'sortByCn');
 
 		echo("
 		<table id='tableComptes' class='display adTable'>
@@ -53,7 +54,7 @@ if($ldapconn) {
 					<th>Utilisateur</th>
 					<th>Mail</th>
 					<th>Fonction</th>
-					<th>Gestionnaire</th>
+					<!-- <th>Gestionnaire</th> -->
 					<th>ID</th>
 				</tr>
 			</thead>
@@ -62,7 +63,8 @@ if($ldapconn) {
 
 		for ($row = 0; $row < count($adlist); $row++) {
 			echo("<tr>");
-	    echo("<td><a href=\"detailCompte.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['cn']."</a></td>");
+	    //echo("<td><a href=\"detailCompte.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['cn']."</a></td>");
+			echo("<td><a href=\"detailCompte.php?id=".removeAccents($adlist[$row]['sam'])."\">".$adlist[$row]['displayname']."</a></td>");
 			echo("<td>");
 			echo ($adlist[$row]['mail']);
 			if ($adlist[$row]['mail'] !=""){
@@ -70,12 +72,12 @@ if($ldapconn) {
 			}
 			echo ("</td>");
 			echo("<td>".$adlist[$row]['title']."</td>");
-			if ($adlist[$row]['managedby'] != ""){
+			/*if ($adlist[$row]['managedby'] != ""){
 				 echo("<td><a href=\"detailCompte.php?dn=".removeAccents($adlist[$row]['managedby'])."\">".explodeCN($adlist[$row]['managedby'])."</a></td>");
 			}
 			else {
 				echo ("<td></td>");
-			}
+			}*/
 	    echo("<td>".$adlist[$row]['employeeid']."</td>");
 			echo("</tr>");
 		}

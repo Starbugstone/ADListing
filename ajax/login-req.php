@@ -45,6 +45,12 @@ if ( isset($_POST['sAMAccountName']) ) {
         }
       }
 
+      if(isset($ldapRHAdminGroup) && $ldapRHAdminGroup!=""){
+        if (in_array($ldapRHAdminGroup,$data[0]['memberof'])){
+          $_SESSION['ldapRHAdminGroup'] = TRUE;
+        }
+      }
+
 
       //get all the info from our vars.php file then store in session to not charge AD requests just for the menu
       foreach ($loggedinInfo as $row => $param) {

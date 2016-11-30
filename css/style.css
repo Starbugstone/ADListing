@@ -57,10 +57,24 @@ table.adTableComplet{
   width: 100%;
 }
 
-.panel-body p{
+img.thumb{
+  border-radius: 10px;
+  border-color: rgb(221, 221, 221);
+  border-width: 1px;
+  border-style: solid;
+  box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.66);
+  max-height: 104px;
+  max-width: 104px;
+}
+
+.panel-body p, .panel-body .RHEditRow{
   border-bottom: thin solid #ddd;
   padding-bottom: 3px;
   text-align: left;
+}
+
+.panel-body p.noBorder{
+  border: none;
 }
 
 .panelIcons>p{
@@ -92,6 +106,17 @@ table.adTableComplet{
 .formLabelAlignRight{
   padding-top: 8px;
   text-align: right;
+}
+
+/* Edit RH */
+
+.editRHLabel{
+  padding-top: 7px;
+}
+
+#rppsHelp{
+  color: red;
+  font-weight: bold;
 }
 
 /*Organigramme*/
