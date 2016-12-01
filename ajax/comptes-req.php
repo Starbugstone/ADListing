@@ -45,7 +45,7 @@ if($ldapconn) {
 		}while($cookie !== null && $cookie != '');
 
 		//Sorting the list
-		//usort($adlist, 'sortByCn');
+		usort($adlist, 'sortBydisplayname');
 
 		echo("
 		<table id='tableComptes' class='display adTable'>

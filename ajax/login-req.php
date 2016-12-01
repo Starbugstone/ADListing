@@ -34,7 +34,7 @@ if ( isset($_POST['sAMAccountName']) ) {
       $filter = "(&(objectCategory=person)(samaccountname=$sam))";
       $result = ldap_search($ldapconn,$ldaptree,$filter);
       $data = ldap_get_entries($ldapconn,$result);
-
+      $connexionLogMessage='';
 
 
       $_SESSION['responseName'] = $returndata['responseName'] = $data[0]['displayname'][0];
@@ -76,6 +76,7 @@ if ( isset($_POST['sAMAccountName']) ) {
           $_SESSION[$row] = $returndata[$row] = $param['ldapErrorVal'];
         }
       }
+      $connexionLogMessage = ' ---Connexion reussi---'."\r\n";
     }else{
       //connexion refused for user, connect with admin and check if account is locked or user exists and return detailed error
       $returndata['state'] = false;
@@ -88,12 +89,15 @@ if ( isset($_POST['sAMAccountName']) ) {
         $lockout = checkLogoutTime($data);
         if ($lockout != '0'){
           $returndata['error'] = '<b>Mauvais Mot de passe, compte verouillé depuis : </b>' .$lockout;
+          $connexionLogMessage = ' ---Compte verouillé depuis : '.$lockout.'---'."\r\n";
         }else if(isset($data[0])){
           //got user and not locked out so bad password
           $returndata['error'] =  "Mauvais Mot de passe";
+          $connexionLogMessage = ' ---erreur mot de passe---'."\r\n";
         }else{
           //no user
           $returndata['error'] =  "Mauvais utilisateur";
+          $connexionLogMessage = ' ---erreur nom utilisateur---'."\r\n";
         }
       }else{
         //we had a bind error
@@ -101,6 +105,9 @@ if ( isset($_POST['sAMAccountName']) ) {
       }
 
     }
+    $logPath = $logFolder.$sam.'.txt';
+    $modifiedLogTitle = $connexionLogMessage.'Compte '.$sam.' connecté le '.date("Y-m-d H:i:s")."\r\n";
+    file_put_contents($logPath,$modifiedLogTitle,FILE_APPEND);
   }
   ldap_close();
   echo json_encode($returndata);

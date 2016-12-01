@@ -16,6 +16,9 @@ $ldapExtraAdminGroup = 'true';
 //membres de ce groupe peuvent mettre a jour les infos des utilisateurs
 $ldapRHAdminGroup = 'CN=Groupe AdminAD RH,OU=LDAP,DC=aider,DC=asso,DC=fr';
 
+//chemin fichier LOG
+$logFolder = 'C:\xampp\htdocs\Comptes\log\\';
+
 //should we bypass the user rights and use admin rights.
 //need to do this if you want to allow users to update more sensitive information
 //By default, users can update Office and phone numbers only

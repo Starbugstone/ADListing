@@ -99,14 +99,7 @@ img.thumb{
   text-align: left;
 }
 
-.modInput{
-  text-align: center;
-}
 
-.formLabelAlignRight{
-  padding-top: 8px;
-  text-align: right;
-}
 
 /* Edit RH */
 
@@ -117,6 +110,22 @@ img.thumb{
 #rppsHelp{
   color: red;
   font-weight: bold;
+}
+
+/* Edit Perso */
+.modInput{
+  text-align: center;
+  border-radius: 4px 4px 0 0;
+}
+
+.modHelp{
+  border-radius: 0 0 4px 4px;
+  background-color: rgb(208, 207, 207);
+}
+
+.formLabelAlignRight{
+  padding-top: 8px;
+  text-align: right;
 }
 
 /*Organigramme*/

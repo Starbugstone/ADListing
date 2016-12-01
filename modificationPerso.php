@@ -48,35 +48,48 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
 
 
 <div class="container-fluid text-center">
-  <div class="row content">
-    <div class="col-xs-8 col-xs-offset-2">
 
-      <h1>Modification du compte <?php echo ($_SESSION['sAMAccountName']); ?></h1>
-      <form id="AdUpdateForm">
+
+  <h1>Modification du compte <?php echo ($_SESSION['sAMAccountName']); ?></h1>
+  <form id="AdUpdateForm">
+    <div class="row content">
+      <div class="col-md-6">
         <?php
+        $i=0;
+        $halfInfoCount=ceil(count($loggedinInfo)/2);
+
+
         foreach ($loggedinInfo as $row => $param){
+          $i+=1;
+          if ($i == $halfInfoCount){
+            echo('</div><div class="col-md-6">');
+          }
+          echo('<div class="form-group row">');
           //is displayed
           $formDisableClass = '';
           if($param['isVisableModify']){
             if (!$param['isModifiable']){$formDisableClass='disabled';}
-            echo "<div class='form-group row'>";
-            echo "<label for=\"".$row."\" class=\"col-sm-3 formLabelAlignRight\">".$param['description']."</label>";
-            echo " <div class=\"col-sm-9\">";
-            echo "<input type='text' class='form-control modInput' id=\"".$row."\" name=\"".$row."\" aria-describedby=\"".$row."help\" value=\"".$_SESSION[$row]."\" ".$formDisableClass.">";
-            echo "<small id=\"".$row."help\" class='form-control text-muted'>".$param['isModifiableText']."</small>";
-            echo "</div>";
-            echo "</div>";
+            //echo "<div class='form-group row'>";
+            echo ('<label for="'.$row.'" class="col-sm-2 formLabelAlignRight col-form-label">'.$param['description'].'</label>');
+            //echo " <div class=\"col-sm-9\">";
+            echo ('<div class="col-sm-10"><input type="text" class="form-control modInput" id="'.$row.'" name="'.$row.'" aria-describedby="'.$row.'help" value="'.$_SESSION[$row].'" '.$formDisableClass.'>');
+            echo ('<small id="'.$row.'help" class="form-control text-muted modHelp">'.$param['isModifiableText'].'</small></div>');
+            //echo "</div>";
+            //echo "</div>";
 
           }
+          echo('</div>');
+
         }
 
 
         //submit button needs to have a write to log attached. take care of it in the php update file
         ?>
         <button type="submit" class="btn btn-primary" name="btn-updateAD" id="btn-updateAD">Mettre a jour</button>
-      </form>
+      </div>
     </div>
-  </div>
+  </form>
+
 </div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

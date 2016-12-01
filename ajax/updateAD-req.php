@@ -39,7 +39,7 @@ if (isset($_SESSION['domainsAMAccountName'])) {
         $result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
         $data = ldap_get_entries($ldapconn, $result);
 
-
+        $modifiedLog = array();
         foreach ($loggedinInfo as $row => $param){
           //loop over all our elements
           if($param['isVisableModify'] and $param['isModifiable']){
@@ -47,7 +47,7 @@ if (isset($_SESSION['domainsAMAccountName'])) {
             $ldapParamData = $data[0][$param['ldapName']][0];
             if ($_POST[$row] != $param['ldapErrorVal'] and $_POST[$row] != $ldapParamData) {
               //check if it's diffrent to the null value or AD value
-
+              array_push($modifiedLog,'cle mise a jour :'.$param['ldapName'].'=>'.$_POST[$row]."\r\n".'Ancien Valeur=>'.$_SESSION[$row]."\r\n");
               //construct the array for the php update
               $ldapParamDn = $data[0]['dn'];
               $userdata=array();
@@ -72,8 +72,16 @@ if (isset($_SESSION['domainsAMAccountName'])) {
 
 
             }
-            
+
           }
+        }
+
+        //add log
+        $logPath = $logFolder.$sessionSAM.'.txt';
+        $modifiedLogTitle = ' ---SelfUpdate---'."\r\n".'Compte '.$sessionSAM.' modifier par '.$sessionSAM.' le '.date("Y-m-d H:i:s")."\r\n";
+        file_put_contents($logPath,$modifiedLogTitle,FILE_APPEND);
+        foreach ($modifiedLog as $key => $value) {
+          file_put_contents($logPath,$value,FILE_APPEND);
         }
 
       }

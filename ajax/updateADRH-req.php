@@ -18,27 +18,6 @@ $returndata = array(
 $samaccountname = $_POST["samaccountname"];
 
 
-/*$userdata=array();
-$userdata["sn"][0] = $sn = $_POST["sn"];
-$userdata["givenname"][0] = $givenname = $_POST["givenname"];
-//check if need space
-if($sn!=""&&$givenname!=""){
-  $userdata["cn"][0] = $sn.' '.$givenname;
-}else{
-  $userdata["cn"][0] = $sn.$givenname;
-}
-$userdata["employeeid"][0] = $_POST["employeeid"];
-if ($customRPPSField){
-  $userdata["rpps"][0] = $_POST["rpps"];
-}
-$userdata["description"][0] = $_POST["description"];
-$userdata["telephonenumber"][0] = $_POST["telephonenumber"];
-$userdata["mobile"][0] = $_POST["mobile"];
-$userdata["facsimiletelephonenumber"][0] = $_POST["facsimiletelephonenumber"];
-$userdata["company"][0] = $_POST["company"];
-*/
-
-
 if(!isset($_SESSION))
   {
     session_start();
@@ -62,10 +41,6 @@ if (isset($_SESSION['domainsAMAccountName'])) {
         }
         $returndata['state']=true;
 
-        //parse_str($_POST[$data], $theData);
-        //error_log(print_r($theData,true));
-        //error_log($_POST["sn"]);
-
 
         //1st grab the actual info so we can check later
         //$sessionSAM = $_SESSION['sAMAccountName'];
@@ -81,61 +56,34 @@ if (isset($_SESSION['domainsAMAccountName'])) {
         $userdata=array();
         //go through all that was posted
 
-
+        $modifiedLog = array();
         foreach($_POST as $LDAPkey => $value){
           if(in_array($LDAPkey,$RHUpdateKeys)){
             //error_log('key : '.$LDAPkey.', value : '.$value);
             //check if value is diffrent in AD, if yes then add to update field
             if ($data[0][$LDAPkey][0] != $value){
-              error_log('updateKey :'.$LDAPkey.'->'.$value.' | OldKey=>'.$data[0][$LDAPkey][0].' | LdapKey=>'.$LDAPkey);
-              $userdata[$LDAPkey][0] = $value;
+              //error_log('updateKey :'.$LDAPkey.'->'.$value.' | OldKey=>'.$data[0][$LDAPkey][0].' | LdapKey=>'.$LDAPkey);
+              array_push($modifiedLog,'cle mise a jour :'.$LDAPkey.'=>'.$value."\r\n".'Ancien Valeur=>'.$data[0][$LDAPkey][0]."\r\n");
+              //$userdata[$LDAPkey][0] = $value;
               //run update
-              if($value != null){
+              if($value != null && !empty($value)){
+                $userdata[$LDAPkey][0] = $value;
                 ldap_modify($ldapconn,$ldapParamDn,$userdata);
               }else{
-                ldap_mod_del($ldapconn, $ldapParamDn, $userdata);
+                $userdata[$LDAPkey][0] = $data[0][$LDAPkey][0];
+                ldap_mod_del($ldapconn, $ldapParamDn,$userdata);
               }
             }
           }
 
         }
-
-        /*
-        foreach ($loggedinInfo as $row => $param){
-          //loop over all our elements
-          if($param['isVisableModify'] and $param['isModifiable']){
-            //only grab the stuff that was shown in the modifiable form. We should only be getting info from there
-            $ldapParamData = $data[0][$param['ldapName']][0];
-            if ($_POST[$row] != $param['ldapErrorVal'] and $_POST[$row] != $ldapParamData) {
-              //check if it's diffrent to the null value or AD value
-
-              //construct the array for the php update
-              $ldapParamDn = $data[0]['dn'];
-              $userdata=array();
-              $userdata[$param['ldapName']][0] = $_POST[$row];
-              //update AD
-              //check if not deleted entry
-              if ($_POST[$row]!= null) {
-                $userdata[$param['ldapName']][0] = $_POST[$row];
-                ldap_modify($ldapconn,$ldapParamDn,$userdata);
-                //Update the session and add to returndata to update the mod page
-                $_SESSION[$row] = $returndata[$row]= $_POST[$row];
-              }
-              // If deleted, we must use ldap_mod_del
-              else{
-                //need to get the existing value. grab from session
-                $userdata[$param['ldapName']][0] = $_SESSION[$row];
-                ldap_mod_del($ldapconn, $ldapParamDn, $userdata);
-                //Update the session and add to returndata to update the mod page
-                $_SESSION[$row] = $returndata[$row]= $param['ldapErrorVal'];
-
-              }
-
-
-            }
-
-          }
-        }*/
+        //add log
+        $logPath = $logFolder.$samaccountname.'.txt';
+        $modifiedLogTitle = ' ---RH-Update---'."\r\n".'Compte '.$samaccountname.' modifier par '.$_SESSION['domainsAMAccountName'].' le '.date("Y-m-d H:i:s")."\r\n";
+        file_put_contents($logPath,$modifiedLogTitle,FILE_APPEND);
+        foreach ($modifiedLog as $key => $value) {
+          file_put_contents($logPath,$value,FILE_APPEND);
+        }
 
       }
       else {

@@ -92,7 +92,13 @@ if($ldapconn) {
     //3rd pannel
 
     if (isset($data[0]['manager'][0])){
-      $manager = "<a href=\"detailCompte.php?dn=".removeAccents($data[0]['manager'][0])."\">".explodeCN($data[0]['manager'][0])."</a>";
+      //get display name from AD
+      $managerDN = $data[0]['manager'][0];
+      $filter1 = "(&(objectCategory=person)(distinguishedname=$managerDN))";
+      $result1 = ldap_search($ldapconn,$ldaptree, $filter1) or die ("Error in search query: ".ldap_error($ldapconn));
+      $data1 = ldap_get_entries($ldapconn, $result1);
+      $managerDisplayName = getOr($data1[0]["displayname"][0],$data1[0]["cn"][0]);
+      $manager = "<a href=\"detailCompte.php?dn=".removeAccents($data[0]['manager'][0])."\">".$managerDisplayName."</a>";
       $managerDn = removeAccents($data[0]['manager'][0]);
     }
     else{
@@ -165,7 +171,7 @@ if($ldapconn) {
           <p><b>Login&nbsp;:</b> <span id='login'><?php echo($samaccountname); ?></span><button class='btn clipBtn' data-clipboard-target='#login' title="Copier Login"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Nom&nbsp;:</b> <span id='Nom'><?php echo($nom); ?></span><button class='btn clipBtn' data-clipboard-target='#Nom' title="Copier Nom"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Prenom&nbsp;:</b> <span id='Prenom'><?php echo($prenom); ?></span><button class='btn clipBtn' data-clipboard-target='#Prenom' title="Copier Prenom"><span class="glyphicon glyphicon-copy"></span></button></p>
-          <p><b>Nom&#8209;Prenom&nbsp;:</b> <span id='NomPrenom'><?php echo($nomPrenom); ?></span><button class='btn clipBtn' data-clipboard-target='#NomPrenom' title="Copier Nom-Prenom"><span class="glyphicon glyphicon-copy"></span></button></p>
+          <p><b>Nom&nbsp;Affiche&nbsp;:</b> <span id='NomPrenom'><?php echo($displayName); ?></span><button class='btn clipBtn' data-clipboard-target='#NomPrenom' title="Copier Nom-Prenom"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Mail&nbsp;:</b> <span id='e-mail'><?php echo($mail); ?></span><?php echo($mail_link); ?><button class='btn clipBtn' data-clipboard-target='#e-mail' title="Copier Mail"><span class="glyphicon glyphicon-copy"></span></button></p>
           <p><b>Matricule&nbsp;:</b> <span id='Matricule'><?php echo($Matricule); ?></span><button class='btn clipBtn' data-clipboard-target='#Matricule' title="Copier Matricule"><span class="glyphicon glyphicon-copy"></span></button></p>
           <?php
@@ -251,8 +257,10 @@ if($ldapconn) {
 
           <div id="collegues"><i class='fa fa-spinner fa-pulse'></i></div>
 
+          <div id="GestionaireDe"><i class='fa fa-spinner fa-pulse'></i></div>
+
           <?php
-          if($directReports!=$directReportsError AND count($directReports)>0 ){
+          /*if($directReports!=$directReportsError AND count($directReports)>0 ){
             echo("<p><b>Gestionnaire de&nbsp;:</b></p><ul class='colaboList'>");
             foreach( $directReports as $colabo) {
               //Get rid of all the excess CN and OU
@@ -262,7 +270,7 @@ if($ldapconn) {
               }
             }
             echo("</ul>");
-          }
+          }*/
           ?>
 
           <div id="GestionGroupes"><i class='fa fa-spinner fa-pulse'></i></div>
@@ -285,6 +293,7 @@ if($ldapconn) {
 //load collegues via Ajax
 $("#collegues").load("ajax/getColabo-req.php?manager=<?php echo(rawurlencode($managerDn)); ?>&user=<?php echo(rawurlencode($samaccountname)); ?>");
 $("#GestionGroupes").load("ajax/getGroupsManagedBy-req.php?user=<?php echo(rawurlencode($fullDn)); ?>");
+$("#GestionaireDe").load("ajax/getDirectReporters-req.php?user=<?php echo(rawurlencode($samaccountname)); ?>");
 
 var clipboard = new Clipboard('.clipBtn');
 clipboard.on('success', function(e) {
