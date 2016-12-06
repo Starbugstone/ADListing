@@ -3,7 +3,7 @@ include '../php/config.php';
 include '../php/functions.php';
 
 //filtre
-$filter='(&(objectCategory=person)(samaccountname=*)(!(useraccountcontrol=514)))';
+$filter='(&(objectCategory=person)(samaccountname=*)(!(useraccountcontrol:1.2.840.113556.1.4.803:=2)))';
 //useraccountcontrol 514 is disactivated
 
 // connect
@@ -42,7 +42,8 @@ if($ldapconn) {
 						"fax"=>getOr($data[$i]["facsimiletelephonenumber"][0],""),
 						"ville"=>getOr($data[$i]["l"][0],""),
 						"bureau"=>getOr($data[$i]["physicaldeliveryofficename"][0],""),
-						"service"=>getOr($data[$i]["department"][0],"")
+						"service"=>getOr($data[$i]["department"][0],""),
+						"useraccountcontrol"=>getOr($data[$i]["useraccountcontrol"][0],"")
   				));
         }
 			}
@@ -70,6 +71,7 @@ if($ldapconn) {
 					<th>Telephone</th>
 					<th>Mobile</th>
 					<th>Fax</th>
+					<th>UsrControl</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -95,6 +97,7 @@ if($ldapconn) {
 			echo("<td>".$adlist[$row]['telephone']."</td>");
 			echo("<td>".$adlist[$row]['mobile']."</td>");
 			echo("<td>".$adlist[$row]['fax']."</td>");
+			echo("<td>".$adlist[$row]['useraccountcontrol']."</td>");
 			echo("</tr>");
 		}
 		echo("</tbody></table>");

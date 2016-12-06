@@ -61,14 +61,10 @@ if($ldapconn) {
       $mail = "Aucun mail";
     }
     if(isset($data[0]['managedby'][0])){
-      $managedby = explodeCN($data[0]['managedby'][0]);
-      $managedByDN = $data[0]['managedby'][0];
-
-      $managedByDNLink = '<i class="fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte" data-dn="'.removeAccents($managedByDN).'"></i><a class="varLink" href="groupeOuCompte.php?dn='.$managedByDN.'">'.$managedby.'</a></p>';
+      $managedby = "<a href=\"detailCompte.php?dn=".$data[0]['managedby'][0]."\">".explodeCN($data[0]['managedby'][0])."</a>";
     }
     else{
       $managedby ="Pas de Gestionnaire";
-      $managedByDNLink="Aucun Gestionnaire";
     }
     $description = getOr($data[0]["description"][0], "Pas de description");
 
@@ -121,104 +117,11 @@ if($ldapconn) {
 <link href="css/print.css" rel="stylesheet">
 </head>
 <body>
-<?php include 'navBar.php'; ?>
 
-<div class="container-fluid text-center">
-  <div class="row content equal">
-
-    <div class="col-md-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-        <h3 class="panel-title"><?php echo($cn); ?></h3>
-        </div>
-        <div class="panel-body">
-          <p><b>Mail&nbsp;:</b> <?php echo($mail); ?></p>
-          <p><b>Gestionnaire&nbsp;:</b> <?php echo($managedByDNLink);?>
-          <p><b>Description&nbsp;:</b> <?php echo($description); ?></p>
-          <?php
-          //Zone Admin ----------------------------------------------------
-          if(CheckIfAdmin()){
-            echo('<p><b>distinguishedname&nbsp;:</b><br>'.$fullDn.'</p>');
-          }
-          // fin zone admin -----------------------------------------------
-          ?>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-        <h3 class="panel-title"><?php echo("Membres ".$cn." ".$memberCount); ?></h3>
-        </div>
-        <div class="panel-body">
-
-            <?php
-            if($memberNoError){
-              foreach ($members as $member) {
-                if(blacklistedDistinguishedname($member, $refusedOU) == FALSE){
-                  echo("<p><i class='fa fa-spinner fa-pulse secIcon ajaxGroupeOuCompte' data-dn=\"".removeAccents($member)."\"></i><a class='varLink' href=\"groupeOuCompte.php?dn=".removeAccents($member)."\">".explodeCN($member)."</a></p>");
-                }
-              }
-            }
-            else{
-              echo($members);
-            }
-
-
-            ?>
-
-        </div>
-      </div>
-    </div>
-
-
-
-
-  </div>
-</div>
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="js/jquery-2.2.4.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="js/bootstrap.min.js"></script>
-<script src="js/script.js"></script>
-
-<script>
-$(document).ready(function() {
-  $('.ajaxGroupeOuCompte').each(function(){
-    var $element = this;
-    var $myDnData = $(this).data("dn");
-    console.log($myDnData);
-    if($myDnData){
-      $.getJSON("ajax/groupeOuCompte-req-json.php?dn="+$myDnData,function(result){
-        //grab the link element and the Href
-        var $linkElement = $($element).next(".varLink");
-        var $linkElementHref = ($linkElement).attr("href");
-        if(result['type']=="USER"){
-          console.log("USER");
-          $($element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-user");
-          $($element).prop('title', 'Utilisateur');
-          $linkElementHref = $linkElementHref.replace("groupeOuCompte.php?dn","detailCompte.php?dn");
-        }else if(result['type']=="GROUP"){
-          console.log("group");
-          $($element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-users");
-          $($element).prop('title', 'Groupe');
-          $linkElementHref = $linkElementHref.replace("groupeOuCompte.php?dn","detailGroupe.php?dn");
-        }else{
-          //error, need to add extra on error handeling
-          //console.log(result['errorMessage']);
-          $($element).removeClass("fa-spinner fa-pulse ajaxGroupeOuCompte").addClass("fa-question-circle-o");
-          $($element).prop('title', 'Erreur');
-        }
-        //replace our link with the proper link depending on if group or user
-        ($linkElement).attr("href", $linkElementHref);
-      });
-    }
-  });
-
-
-});
-</script>
+<?php
+  echo '<h1>Dump all data</h1><pre>';
+  print_r($data);
+  echo '</pre>';
+?>
 </body>
 </html>

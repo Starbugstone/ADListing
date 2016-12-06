@@ -115,6 +115,15 @@ function removeSpaces($str=''){
   return $str;
 }
 
+function accountIsNotActive($useraccountcontrol){
+  $result = false;
+  $activeBit = substr(decbin($useraccountcontrol),-2,1);
+  if($activeBit == "1"){
+    $result = true;
+  }
+  return $result;
+}
+
 function CheckIfAdmin(){
   if (isset($_SESSION['ldapExtraAdminGroup']) && $_SESSION['ldapExtraAdminGroup'] == TRUE) {
     return TRUE;
@@ -132,6 +141,19 @@ function CheckIfRH(){
     return FALSE;
   }
 }
+
+//check if the element's CN is blacklisted againsed a $refused list.
+//$refused is configured in config file
+function checkIfDesacivable($memberOf, $refusedGroup=""){
+  $blacklisted = FALSE;
+  foreach ($memberOf as $group) {
+    if ($group == $refusedGroup){
+      $blacklisted = TRUE;
+    }
+  }
+  return $blacklisted;
+}
+
 
 function checkLogoutTime($data){
   if(isset($data[0]["lockouttime"][0]) && $data[0]["lockouttime"][0]>0){

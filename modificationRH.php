@@ -59,6 +59,12 @@ if($ldapconn) {
       //echo $filter;
     }
 
+    //Now that we are connected, do a quick check to see if the account isn't in the refused OU paramater. 1st security of avoiding modifying sensative accounts
+    if ( blacklistedDistinguishedname($data[0]["distinguishedname"][0],$refusedOU) ){
+      header('Location: index.php');
+      exit();
+    }
+
     //grab all our required info
     //1st pannel
     if (isset($data[0]['thumbnailphoto'][0])){
@@ -107,8 +113,19 @@ if($ldapconn) {
     $fax = getOr($data[0]['facsimiletelephonenumber'][0],"");
     $office = getOr($data[0]['physicaldeliveryofficename'][0],"");
     $ville = getOr($data[0]['l'][0],"");
-
-
+    $useraccountcontrol=$data[0]["useraccountcontrol"][0];
+    $memberOf = $data[0]['memberof'];
+    if (accountIsNotActive($useraccountcontrol)){
+      $accountState = "<p id='accountStateIcon'><span class='glyphicon glyphicon-warning-sign secIcon'></span>Compte Desactive</p>";
+      $desactivateButtonText = "Activer le compte";
+      $desactivateButtonClass = "ActivateAccount";
+      $dataActive = 0;
+    }else{
+      $accountState = "<p  id='accountStateIcon' class='hidden'><span class='glyphicon glyphicon-warning-sign secIcon'></span>Compte Desactive</p>";
+      $desactivateButtonText = "Desactiver le compte";
+      $desactivateButtonClass = "DesactivateAccount";
+      $dataActive = 1;
+    }
 
   } else {
     echo "LDAP bind failed...";
@@ -154,21 +171,26 @@ if($ldapconn) {
         <h3 class="panel-title"><?php echo($nomPrenom); ?></h3>
         </div>
         <div class="panel-body panelIcons">
-          <?php echo $thumbnailImg;?>
+          <?php
+          echo('<div id="accountState">');
+          echo $accountState;
+          echo('</div>');
+          echo $thumbnailImg;
+          ?>
           <p>Changer Photo(non implementer)</p>
           <div class="form-group row RHEditRow"><label for="samaccountname-text" class="col-sm-2 col-form-label editRHLabel">Login</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="samaccountname-text" >'.$samaccountname.'</p>');?></div></div>
-          <div class="form-group row RHEditRow hidden"><label for="samaccountname" class="col-sm-2 col-form-label editRHLabel">Nom</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="samaccountname" name="samaccountname"  value="'.$samaccountname.'">');?></div></div>
-          <div class="form-group row RHEditRow"><label for="nom" class="col-sm-2 col-form-label editRHLabel">Nom</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="nom" name="sn"  value="'.$nom.'">');?></div></div>
-          <div class="form-group row RHEditRow"><label for="prenom" class="col-sm-2 col-form-label editRHLabel">Prenom</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="prenom" name="givenname" value="'.$prenom.'">');?></div></div>
-          <div class="form-group row RHEditRow"><label for="nomPrenom" class="col-sm-2 col-form-label editRHLabel">Nom&nbsp;afficher</label> <div class="col-sm-10"><?php echo('<input readonly type="text" class="form-control" id="nomPrenom" name="displayname" value="'.$displayName.'">');?></div></div>
+          <div class="form-group row RHEditRow hidden"><label for="samaccountname" class="col-sm-2 col-form-label editRHLabel">Nom</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="samaccountname-hidden" name="samaccountname"  value="'.$samaccountname.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="nom" class="col-sm-2 col-form-label editRHLabel">Nom</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="sn" name="sn"  value="'.$nom.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="prenom" class="col-sm-2 col-form-label editRHLabel">Prenom</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="givenname" name="givenname" value="'.$prenom.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="nomPrenom" class="col-sm-2 col-form-label editRHLabel">Nom&nbsp;afficher</label> <div class="col-sm-10"><?php echo('<input readonly type="text" class="form-control" id="displayname" name="displayname" value="'.$displayName.'">');?></div></div>
           <div class="form-group row RHEditRow"><label for="mail" class="col-sm-2 col-form-label editRHLabel">Mail</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="mail" >'.$mail.'</p>');?></div></div>
-          <div class="form-group row RHEditRow"><label for="matricule" class="col-sm-2 col-form-labe editRHLabell">Matricule</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="matricule" name="employeeid" value="'.$Matricule.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="matricule" class="col-sm-2 col-form-labe editRHLabell">Matricule</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="employeeid" name="employeeid" value="'.$Matricule.'">');?></div></div>
           <?php
           if ($customRPPSField){
             echo('<div class="form-group row RHEditRow" id="rppsRow"><label for="rpps" class="col-sm-2 col-form-label editRHLabel">RPPS</label> <div class="col-sm-10"><input type="text" class="form-control" id="rpps" name="rpps" value="'.$RPPS.'"></div></div>');
           }
           ?>
-          <div class="form-group row RHEditRow"><label for="Description" class="col-sm-2 col-form-label editRHLabel">Description</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="Description" name="description" value="'.$description.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="Description" class="col-sm-2 col-form-label editRHLabel">Description</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="description" name="description" value="'.$description.'">');?></div></div>
 
         </div>
       </div>
@@ -186,10 +208,10 @@ if($ldapconn) {
           <div class="form-group row RHEditRow"><label for="Service" class="col-sm-2 col-form-label editRHLabel">Service</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="Service" >'.$department.'</p>');?></div></div>
           <div class="form-group row RHEditRow"><label for="Bureau" class="col-sm-2 col-form-label editRHLabel">Bureau</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="Bureau" >'.$office.'</p>');?></div></div>
           <div class="form-group row RHEditRow"><label for="Ville" class="col-sm-2 col-form-label editRHLabel">Ville</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="Ville" >'.$ville.'</p>');?></div></div>
-          <div class="form-group row RHEditRow"><label for="Telephone" class="col-sm-2 col-form-label editRHLabel">Telephone</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="Telephone" name="telephonenumber" value="'.$telephone.'">');?></div></div>
-          <div class="form-group row RHEditRow"><label for="Mobile" class="col-sm-2 col-form-label editRHLabel">Mobile</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="Mobile" name="mobile" value="'.$mobile.'">');?></div></div>
-          <div class="form-group row RHEditRow"><label for="Fax" class="col-sm-2 col-form-label editRHLabel">Fax</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="Fax" name="facsimiletelephonenumber" value="'.$fax.'">');?></div></div>
-          <div class="form-group row RHEditRow"><label for="Societe" class="col-sm-2 col-form-label editRHLabel">Societe</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="Societe" name="company" value="'.$company.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="Telephone" class="col-sm-2 col-form-label editRHLabel">Telephone</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="telephonenumber" name="telephonenumber" value="'.$telephone.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="Mobile" class="col-sm-2 col-form-label editRHLabel">Mobile</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="mobile" name="mobile" value="'.$mobile.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="Fax" class="col-sm-2 col-form-label editRHLabel">Fax</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="facsimiletelephonenumber" name="facsimiletelephonenumber" value="'.$fax.'">');?></div></div>
+          <div class="form-group row RHEditRow"><label for="Societe" class="col-sm-2 col-form-label editRHLabel">Societe</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="company" name="company" value="'.$company.'">');?></div></div>
           <div class="form-group row RHEditRow"><label for="Gestionnaire" class="col-sm-2 col-form-label editRHLabel">Gestionnaire</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="Gestionnaire" >'.$manager.'</p>');?></div></div>
 
         </div>
@@ -200,6 +222,13 @@ if($ldapconn) {
   </div>
   <p class="hidden" id="rppsHelp">Un RPPS doit contenir 11 characteres</p>
   <button type="submit" class="btn btn-primary" name="btn-updateAD" id="btn-updateAD">Mettre a jour</button>
+  <?php
+
+  //check if the account can be disactivated
+  if (!in_array($nonDisactivatableAccountGroup,$memberOf)){
+    echo('<a href="#" type="submit" class="btn btn-primary '.$desactivateButtonClass.'" name="btn-desactivate" id="btn-desactivate" data-isactive="'.$dataActive.'" data-useraccountcontrol="'.$useraccountcontrol.'" data-samaccountname="'.$samaccountname.'">'.$desactivateButtonText.'</a>');
+  }
+  ?>
   </form>
 </div>
 
@@ -212,8 +241,13 @@ if($ldapconn) {
 //Update AD ajax request
 function submitUpdate(){
   var $data = $("#AdUpdateForm").serialize();
-  console.log($data);
+  //console.log($data);
   var $response = null;
+
+  //remove all updated class
+  $(".updated").each(function(){
+    $(this).removeClass('updated');
+  });
   //ajax call
   $.ajax({
     type : 'POST',
@@ -229,7 +263,12 @@ function submitUpdate(){
       //check state, modify logon pannel then hide and show loggedin pannel
       if ($response.state){
         $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Ok ...');
-        window.location.reload();
+        //window.location.reload();
+        //Add class to updated elements
+        for($i=0;$i<$response.updatedKeys.length;++$i){
+          var $updatedID = "#"+$response.updatedKeys[$i];
+          $($updatedID).addClass('updated');
+        }
 
 
 
@@ -242,6 +281,54 @@ function submitUpdate(){
   });
   return false;
 }
+
+function changeAccountState($isActive,$samaccountname){
+  var $data={isActive:$isActive,samaccountname:$samaccountname};//need to serialize our data to send here
+  $.ajax({
+    type: 'POST',
+    url : 'ajax/desactivateADRH-req.php',
+    data : $data,
+    beforeSend : function(){
+      $("#btn-desactivate").html('<i class="fa fa-spinner fa-pulse" aria-hidden="true"></i> &nbsp; Mise a jour ...');
+    },
+    success : function ($responseJSON){
+      $response = jQuery.parseJSON($responseJSON);
+      console.log($response);
+      //check state, modify logon pannel then hide and show loggedin pannel
+      if ($response.state){
+
+        //window.location.reload();
+        //Add class to updated elements
+        if($response.activated==1){
+          $("#accountStateIcon").addClass("hidden");
+          $("#accountStateIcon").removeClass("show");
+          $("#btn-desactivate").addClass("DesactivateAccount");
+          $("#btn-desactivate").removeClass("ActivateAccount");
+          $("#btn-desactivate").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Activé');
+          console.log("activated");
+        }else{
+          $("#accountStateIcon").removeClass("hidden");
+          $("#accountStateIcon").addClass("show");
+          $("#btn-desactivate").removeClass("DesactivateAccount");
+          $("#btn-desactivate").addClass("ActivateAccount");
+          $("#btn-desactivate").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Desactivé');
+        }
+
+      }else{
+        //set error
+        $("#btn-desactivate").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; erreur ...');
+        console.log($response.error);
+      }
+    }
+  });
+
+}
+
+$("#btn-desactivate").click(function(){
+  var $isActive = $(this).data("isactive");
+  var $samaccountname = $(this).data("samaccountname");
+  changeAccountState($isActive,$samaccountname);
+});
 
 // Dynamic update of Name Surname.
 function updateNomPrenom(){
@@ -270,16 +357,14 @@ $(document).ready(function() {
 
   $("#rpps").keyup(function(){
     if($("#rpps").val().length != 11 && $("#rpps").val().length != 0 ){
-      console.log("not valid"); //form-control-danger  form-control-warning has-warning
-      //$("#rpps").removeClass('form-control-success').addClass('form-control-danger');
+      //console.log("not valid");
       $("#rpps").addClass('form-control-warning');
       $("#rppsRow").addClass('has-warning');
       $("#rppsHelp").removeClass('hidden');
       $("#btn-updateAD").addClass('disabled');
       $("#btn-updateAD").attr('disabled', 'disabled');
     }else{
-      console.log("valid"); //form-control-success btn-updateAD
-      //$("#rpps").removeClass('form-control-danger').addClass('form-control-success');
+      //console.log("valid");
       $("#rpps").removeClass('form-control-warning');
       $("#rppsRow").removeClass('has-warning');
       $("#rppsHelp").addClass('hidden');

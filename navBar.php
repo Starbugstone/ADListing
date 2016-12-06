@@ -23,7 +23,7 @@ include_once 'php/vars.php';
         <li id="nav1"><a href="index.php">Comptes</a></li>
         <li id="nav2"><a href="groupes.php">Groupes</a></li>
         <?php
-        if(CheckIfAdmin()){
+        if(CheckIfAdmin() || CheckIfRH()){
           echo '<li id="nav3"><a href="desactiver.php">Desactiver</a></li>';
         }
         ?>
@@ -81,7 +81,7 @@ include_once 'php/vars.php';
                       if($param['isVisablePannel']){
                         echo "<p class=\"logedinPannelElement\">";
                           echo "<b>".$param['description']."&nbsp;: </b>";
-                          echo "<span class=\"logedinPannelSpan\" id=\"".$row."\">";
+                          echo "<span class=\"logedinPannelSpan\" id=\"logedinPannelID-".$row."\">";
                             if ($ADSession) {echo ($_SESSION[$row]);}
                           echo "</span>";
                         echo "</p>";

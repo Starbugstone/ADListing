@@ -72,7 +72,7 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
             //echo "<div class='form-group row'>";
             echo ('<label for="'.$row.'" class="col-sm-2 formLabelAlignRight col-form-label">'.$param['description'].'</label>');
             //echo " <div class=\"col-sm-9\">";
-            echo ('<div class="col-sm-10"><input type="text" class="form-control modInput" id="'.$row.'" name="'.$row.'" aria-describedby="'.$row.'help" value="'.$_SESSION[$row].'" '.$formDisableClass.'>');
+            echo ('<div class="col-sm-10"><input type="text" class="form-control modInput" id="'.$param['ldapName'].'" name="'.$row.'" aria-describedby="'.$row.'help" value="'.$_SESSION[$row].'" '.$formDisableClass.'>');
             echo ('<small id="'.$row.'help" class="form-control text-muted modHelp">'.$param['isModifiableText'].'</small></div>');
             //echo "</div>";
             //echo "</div>";
@@ -102,6 +102,10 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
 function submitUpdate(){
   var $data = $("#AdUpdateForm").serialize();
   var $response = null;
+  //remove style of updated inputs
+  $(".updated").each(function(){
+    $(this).removeClass('updated');
+  });
   //ajax call
   $.ajax({
     type : 'POST',
@@ -115,8 +119,13 @@ function submitUpdate(){
       $response = jQuery.parseJSON($responseJSON);
       //check state, modify logon pannel then hide and show loggedin pannel
       if ($response.state){
-        $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Ok ...');
-        window.location.reload();
+        $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Modification effectué');
+        //window.location.reload();
+        //Add class to updated elements
+        for($i=0;$i<$response.updatedKeys.length;++$i){
+          var $updatedID = "#"+$response.updatedKeys[$i];
+          $($updatedID).addClass('updated');
+        }
 
 
 
@@ -131,6 +140,8 @@ function submitUpdate(){
 }
 
 $(document).ready(function() {
+
+
   //update
   $("#AdUpdateForm").submit(function(e){
     submitUpdate();

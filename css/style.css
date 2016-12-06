@@ -112,6 +112,18 @@ img.thumb{
   font-weight: bold;
 }
 
+.ActivateAccount{
+      background-color: #308e00;
+}
+
+.DesactivateAccount{
+  background-color: #ca1111;
+}
+
+#AdUpdateForm{
+  padding-bottom: 25px;
+}
+
 /* Edit Perso */
 .modInput{
   text-align: center;
@@ -122,6 +134,12 @@ img.thumb{
   border-radius: 0 0 4px 4px;
   background-color: rgb(208, 207, 207);
 }
+
+.updated{
+  background-color: green;
+}
+
+
 
 .formLabelAlignRight{
   padding-top: 8px;

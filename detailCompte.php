@@ -73,7 +73,8 @@ if($ldapconn) {
     $Matricule = getOr($data[0]["employeeid"][0],"");
     $description = getOr($data[0]["description"][0],"Pas de description");
     if ($customRPPSField){$RPPS = getOr($data[0]["rpps"][0],"");}
-    if ($data[0]["useraccountcontrol"][0]==514){
+
+    if (accountIsNotActive($data[0]["useraccountcontrol"][0])){
       $accountState = "<p><span class='glyphicon glyphicon-warning-sign secIcon'></span>Compte Desactive</p>";
     }else{
       $accountState = "";

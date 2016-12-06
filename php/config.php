@@ -16,6 +16,9 @@ $ldapExtraAdminGroup = 'true';
 //membres de ce groupe peuvent mettre a jour les infos des utilisateurs
 $ldapRHAdminGroup = 'CN=Groupe AdminAD RH,OU=LDAP,DC=aider,DC=asso,DC=fr';
 
+//mail d'alerte lors du desactivation d'un compte
+$MailAlert = "clancy@aider.asso.fr";
+
 //chemin fichier LOG
 $logFolder = 'C:\xampp\htdocs\Comptes\log\\';
 

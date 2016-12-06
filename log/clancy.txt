@@ -1,20 +1,4 @@
  ---SelfUpdate---
-Compte clancy modifier par clancy le 2016-12-01 14:39:37
-cle mise a jour :facsimiletelephonenumber=>123456
-Ancien Valeur=>Aucun Fax
- ---RH-Update---
-Compte clancy modifier par aider\clancy le 2016-12-01 14:40:03
-cle mise a jour :mobile=>123456
-Ancien Valeur=>
- ---SelfUpdate---
-Compte clancy modifier par clancy le 2016-12-01 14:40:25
-cle mise a jour :facsimiletelephonenumber=>
+Compte clancy modifier par clancy le 2016-12-06 15:04:42
+cle mise a jour :mobile=>
 Ancien Valeur=>123456
- ---Connexion---
-Compte clancy connecté le 2016-12-01 14:43:14
- ---Connexion---
-Compte clancy connecté le 2016-12-01 14:43:18
- ---erreur mot de passe---
-Compte clancy connecté le 2016-12-01 14:48:16
- ---Connexion reussi---
-Compte clancy connecté le 2016-12-01 14:48:24

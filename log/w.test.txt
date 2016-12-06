@@ -1,0 +1,78 @@
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 09:23:53
+cle mise a jour :telephonenumber=>
+Ancien Valeur=>123
+cle mise a jour :mobile=>
+Ancien Valeur=>456789
+cle mise a jour :facsimiletelephonenumber=>
+Ancien Valeur=>123456
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 09:24:05
+cle mise a jour :mobile=>
+Ancien Valeur=>456789
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 09:24:12
+cle mise a jour :facsimiletelephonenumber=>
+Ancien Valeur=>123456
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 09:24:26
+cle mise a jour :telephonenumber=>123
+Ancien Valeur=>
+cle mise a jour :mobile=>123
+Ancien Valeur=>
+cle mise a jour :facsimiletelephonenumber=>123
+Ancien Valeur=>
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 09:24:32
+cle mise a jour :telephonenumber=>
+Ancien Valeur=>123
+cle mise a jour :mobile=>
+Ancien Valeur=>123
+cle mise a jour :facsimiletelephonenumber=>
+Ancien Valeur=>123
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 09:27:00
+cle mise a jour :mobile=>
+Ancien Valeur=>123
+cle mise a jour :facsimiletelephonenumber=>
+Ancien Valeur=>123
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 09:27:07
+cle mise a jour :telephonenumber=>12456
+Ancien Valeur=>
+cle mise a jour :mobile=>123456
+Ancien Valeur=>
+cle mise a jour :facsimiletelephonenumber=>132456
+Ancien Valeur=>
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 14:43:42
+cle mise a jour :telephonenumber=>
+Ancien Valeur=>12456
+cle mise a jour :mobile=>
+Ancien Valeur=>123456
+cle mise a jour :facsimiletelephonenumber=>
+Ancien Valeur=>132456
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 14:43:56
+cle mise a jour :telephonenumber=>123456 
+Ancien Valeur=>
+cle mise a jour :mobile=>456
+Ancien Valeur=>
+cle mise a jour :facsimiletelephonenumber=>4687
+Ancien Valeur=>
+ ---RH-Update---
+Compte w.test modifier par aider\clancy le 2016-12-05 14:44:01
+cle mise a jour :telephonenumber=>
+Ancien Valeur=>123456 
+cle mise a jour :mobile=>
+Ancien Valeur=>456
+cle mise a jour :facsimiletelephonenumber=>
+Ancien Valeur=>4687
+ ---RH-Desactivate---
+Compte w.test Desactivé par aider\clancy le 2016-12-06 14:57:57
+ ---RH-Activate---
+Compte w.test Activé par aider\clancy le 2016-12-06 14:58:02
+ ---RH-Desactivate---
+Compte w.test Desactivé par aider\clancy le 2016-12-06 14:58:05
+ ---RH-Activate---
+Compte w.test Activé par aider\clancy le 2016-12-06 14:58:08

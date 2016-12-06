@@ -58,6 +58,7 @@ function submitLogin(){
           var element = $(this);
           var elementSpan = $(".logedinPannelSpan:first",element);
           var elementSpanID = $(elementSpan).attr('id');
+          elementSpanID = elementSpanID.replace('logedinPannelID-','');//remove the addid ID parameter. This was added because we had conflicting ID's
           $(elementSpan).html($response[elementSpanID]);
         });
       }else{

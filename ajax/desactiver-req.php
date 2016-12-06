@@ -3,7 +3,7 @@ include '../php/config.php';
 include '../php/functions.php';
 
 //filtre
-$filter='(&(objectCategory=person)(samaccountname=*)(useraccountcontrol=514))';
+$filter='(&(objectCategory=person)(samaccountname=*)(useraccountcontrol:1.2.840.113556.1.4.803:=2))';
 //useraccountcontrol 514 is disactivated
 
 // connect

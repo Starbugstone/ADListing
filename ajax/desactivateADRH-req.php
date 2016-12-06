@@ -48,44 +48,44 @@ if (isset($_SESSION['domainsAMAccountName'])) {
         $result = ldap_search($ldapconn,$ldaptree, $filter) or die ("Error in search query: ".ldap_error($ldapconn));
         $data = ldap_get_entries($ldapconn, $result);
 
-        $ldapParamDn = $data[0]['dn'];
+        $memberOf = $data[0]['memberof'];
+        if (!in_array($nonDisactivatableAccountGroup,$memberOf)){
 
-        //construction on update
-        //array of authorised updates. For security we check if allowed to update
-        $RHUpdateKeys = array('sn','givenname','displayname','employeeid','rpps','description','telephonenumber','mobile','facsimiletelephonenumber','company');
-        $userdata=array();
-        //go through all that was posted
 
-        $modifiedLog = array();
-        $updatedKeys = array();
-        foreach($_POST as $LDAPkey => $value){
-          if(in_array($LDAPkey,$RHUpdateKeys)){
-            //error_log('key : '.$LDAPkey.', value : '.$value);
-            //check if value is diffrent in AD, if yes then add to update field
-            if ($data[0][$LDAPkey][0] != $value){
-              //error_log('updateKey :'.$LDAPkey.'->'.$value.' | OldKey=>'.$data[0][$LDAPkey][0].' | LdapKey=>'.$LDAPkey);
-              array_push($modifiedLog,'cle mise a jour :'.$LDAPkey.'=>'.$value."\r\n".'Ancien Valeur=>'.$data[0][$LDAPkey][0]."\r\n");
-              array_push($updatedKeys,$LDAPkey);
-              //$userdata[$LDAPkey][0] = $value;
-              //run update
-              if($value != null && !empty($value)){
-                $userdata[$LDAPkey][0] = $value;
-                ldap_modify($ldapconn,$ldapParamDn,$userdata);
-              }else{
-                $userdata[$LDAPkey][0] = $data[0][$LDAPkey][0];
-                ldap_mod_del($ldapconn, $ldapParamDn,$userdata);
-              }
-            }
+          $ldapParamDn = $data[0]['dn'];
+          $useraccountcontrol=$data[0]["useraccountcontrol"][0];
+          //construction on update
+          if (accountIsNotActive($useraccountcontrol)){
+            $dataActive = 0;
+            $returndata['activated']=1;
+            $modifiedLogTitle = ' ---RH-Activate---'."\r\n".'Compte '.$samaccountname.' Activé par '.$_SESSION['domainsAMAccountName'].' le '.date("Y-m-d H:i:s")."\r\n";
+          }else{
+            $dataActive = 1;
+            $returndata['activated']=0;
+            $modifiedLogTitle = ' ---RH-Desactivate---'."\r\n".'Compte '.$samaccountname.' Desactivé par '.$_SESSION['domainsAMAccountName'].' le '.date("Y-m-d H:i:s")."\r\n";
           }
-          unset($userdata); //destroy var else but on multiple delete
-        }
-        $returndata['updatedKeys']=$updatedKeys;
-        //add log
-        $logPath = $logFolder.$samaccountname.'.txt';
-        $modifiedLogTitle = ' ---RH-Update---'."\r\n".'Compte '.$samaccountname.' modifier par '.$_SESSION['domainsAMAccountName'].' le '.date("Y-m-d H:i:s")."\r\n";
-        file_put_contents($logPath,$modifiedLogTitle,FILE_APPEND);
-        foreach ($modifiedLog as $key => $value) {
-          file_put_contents($logPath,$value,FILE_APPEND);
+          //array of authorised updates. For security we check if allowed to update
+          //$RHUpdateKeys = array('sn','givenname','displayname','employeeid','rpps','description','telephonenumber','mobile','facsimiletelephonenumber','company');
+
+          //go through all that was posted
+
+
+
+          //$ac = $data[0]["useraccountcontrol"][0];
+          $disable=($useraccountcontrol |  2); // set all bits plus bit 1 (=dec2)
+          $enable =($useraccountcontrol & ~2); // set all bits minus bit 1 (=dec2)
+          $userdata=array();
+          if ($dataActive==0) $new=$enable; else $new=$disable; //enable or disable?
+          $userdata["useraccountcontrol"][0]=$new;
+          ldap_modify($ldapconn, $ldapParamDn, $userdata); //change state
+          $returndata['assignedValue']=$new;
+          $returndata['oldValue']=$useraccountcontrol;
+          $returndata['WasActive']=$dataActive;
+
+          //ajout au log
+          $logPath = $logFolder.$samaccountname.'.txt';
+          file_put_contents($logPath,$modifiedLogTitle,FILE_APPEND);
+
         }
 
       }
