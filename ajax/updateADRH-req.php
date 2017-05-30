@@ -22,8 +22,9 @@ if(!isset($_SESSION))
   {
     session_start();
   }
-if (isset($_SESSION['domainsAMAccountName'])) {
+if (isset($_SESSION['domainsAMAccountName'])  && $_SESSION['ldapRHAdminGroup'] == TRUE) {
   //check for session, no need to go further if no session and could be security risk
+  //also checking if session has the rights to update profile / is member of the AD-RH group
   $ldapconn = ldap_connect($ldapserver);
   if ($ldapconn) {
 
@@ -52,11 +53,12 @@ if (isset($_SESSION['domainsAMAccountName'])) {
 
         //construction on update
         //array of authorised updates. For security we check if allowed to update
-        $RHUpdateKeys = array('sn','givenname','displayname','employeeid','rpps','description','telephonenumber','mobile','facsimiletelephonenumber','company');
+        $RHUpdateKeys = array('sn','givenname','displayname','employeeid','rpps','description','telephonenumber','mobile','facsimiletelephonenumber','company','manager');
         $userdata=array();
         //go through all that was posted
 
         $modifiedLog = array();
+        $modifiedMail = array();
         $updatedKeys = array();
         foreach($_POST as $LDAPkey => $value){
           if(in_array($LDAPkey,$RHUpdateKeys)){
@@ -64,7 +66,8 @@ if (isset($_SESSION['domainsAMAccountName'])) {
             //check if value is diffrent in AD, if yes then add to update field
             if ($data[0][$LDAPkey][0] != $value){
               //error_log('updateKey :'.$LDAPkey.'->'.$value.' | OldKey=>'.$data[0][$LDAPkey][0].' | LdapKey=>'.$LDAPkey);
-              array_push($modifiedLog,'cle mise a jour :'.$LDAPkey.'=>'.$value."\r\n".'Ancien Valeur=>'.$data[0][$LDAPkey][0]."\r\n");
+              array_push($modifiedLog,'cle mise a jour :'.$LDAPkey.'=>'.$value."\r\n".'Ancienne Valeur=>'.$data[0][$LDAPkey][0]."\r\n");
+              array_push($modifiedMail,'<p>El&eacute;ment modifi&eacute; : '.$LDAPkey.'<br>Ancienne Valeur : '.$data[0][$LDAPkey][0].'<br>Nouvelle Valeur : '.$value.'</p>');
               array_push($updatedKeys,$LDAPkey);
               //$userdata[$LDAPkey][0] = $value;
               //run update
@@ -87,7 +90,25 @@ if (isset($_SESSION['domainsAMAccountName'])) {
         foreach ($modifiedLog as $key => $value) {
           file_put_contents($logPath,$value,FILE_APPEND);
         }
-
+        //send mail
+        if (isset($data[0]['mail'][0]) && $data[0]['mail'][0] != ""){
+          $mailUser = $data[0]['mail'][0];
+          $mailSubject = 'Modification de votre compte AD '.$samaccountname.' par '.$_SESSION['domainsAMAccountName'].' le '.date("Y-m-d H:i:s");
+          $mailBody = '<p>Votre compte AD viens d\'&ecirc;tre modifi&eacute; par '.$_SESSION['domainsAMAccountName'].'</p>';
+          foreach ($modifiedMail as $key => $value) {
+            $mailBody .= $value;
+          }
+          //add account link to mail
+          $mailBody .= '<p>voir le detail du compte <a href="'.$racineSite.'/detailCompte.php?id='.$samaccountname.'">ici</a></p>';
+          if(sendEmail($mailSubject,$mailBody,$mailUser,"clancy@aider.asso.fr")){
+            $returndata['emailSend'] = true;
+            $returndata['emailSendMail'] = $data[0]['mail'][0];
+          }else{
+            $returndata['emailSend'] = false;
+          }
+        }else{
+          $returndata['emailSend'] = false;
+        }
       }
       else {
         //LDAP Bind failed

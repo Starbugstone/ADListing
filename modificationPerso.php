@@ -16,7 +16,8 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
   header('Location: index.php');
   exit();
 }
-
+//register the samaccounname from the session for a return link
+$samaccountname = $_SESSION['sAMAccountName'];
 //need to check is has session
 //also need to grab info from AD and not the session. but ok for the moment while testing
 ?>
@@ -39,6 +40,7 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
 <![endif]-->
 
 <?php include 'favicon.php'; ?>
+<link href="css/toastr.min.css" rel="stylesheet">
 <link href="css/ripple.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
 <link href="css/print.css" rel="stylesheet">
@@ -56,6 +58,7 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
       <div class="col-md-6">
         <?php
         $i=0;
+        //separer en deux colonnes
         $halfInfoCount=ceil(count($loggedinInfo)/2);
 
 
@@ -86,6 +89,9 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
         //submit button needs to have a write to log attached. take care of it in the php update file
         ?>
         <button type="submit" class="btn btn-primary" name="btn-updateAD" id="btn-updateAD">Mettre a jour</button>
+        <?php
+        echo('<a href="detailCompte.php?id='.$samaccountname.'" class="btn btn-primary" style="margin-left:4px;">Retour fiche utilisateur</a>');
+        ?>
       </div>
     </div>
   </form>
@@ -95,9 +101,28 @@ if ( !isset($_SESSION['domainsAMAccountName']) ){
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="js/jquery-2.2.4.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/toastr.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/script.js"></script>
 <script>
+toastr.options = {
+  "closeButton": true,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": true,
+  "positionClass": "toast-bottom-right",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
 //Update AD ajax request
 function submitUpdate(){
   var $data = $("#AdUpdateForm").serialize();
@@ -117,14 +142,18 @@ function submitUpdate(){
     },
     success : function ($responseJSON){
       $response = jQuery.parseJSON($responseJSON);
+      console.log($response);
       //check state, modify logon pannel then hide and show loggedin pannel
       if ($response.state){
-        $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Modification effectué');
+        $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Mettre à jour');
         //window.location.reload();
         //Add class to updated elements
         for($i=0;$i<$response.updatedKeys.length;++$i){
           var $updatedID = "#"+$response.updatedKeys[$i];
-          $($updatedID).addClass('updated');
+          $($updatedID).addClass('updated',200); //annimation effect added by jquery-ui
+          $($updatedID).addClass('updatedBorder',200);
+          $($updatedID).removeClass('updated',1500);
+          toastr["success"]($response.updatedKeys[$i], "Champ mis a jour");
         }
 
 

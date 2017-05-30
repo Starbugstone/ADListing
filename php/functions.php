@@ -1,4 +1,9 @@
 <?php
+
+
+//require_once "./php/config.php";
+
+
 function getOr(&$var, $default) {
     if (isset($var)) {
         return $var;
@@ -178,5 +183,47 @@ function getOrgChartClass($memberOf,$orgChartColors){
   return $orgChartClass;
 }
 
+function sendEmail($mailSubject,$mailBody,$mailTo="",$mailCC=""){
+  include __DIR__."/../phpMailer/PHPMailerAutoLoad.php";
+  include __DIR__."/../php/config.php";
+  if($mailTo == ""){
+    $mailTo = $mailConfig['setTo'];
+  }
+  $mail = new PHPMailer;
 
+  //$mail->SMTPDebug = 3; // Enable verbose debug output
+
+  $mail->isSMTP(); // Set mailer to use SMTP
+  $mail->Host = $mailConfig['host'];  // Specify main and backup SMTP servers
+  $mail->SMTPAuth = $mailConfig['SMTPAuth'];
+  if($mailConfig['SMTPAuth']){                                 // Enable SMTP authentication
+    $mail->Username = $mailConfig['username'];                 // SMTP username
+    $mail->Password = $mailConfig['password'];                 // SMTP password
+    $mail->SMTPSecure = $mailConfig['SMTPSecure'];             // Enable TLS encryption, `ssl` also accepted
+    $mail->Port = $mailConfig['port'];                         // TCP port to connect to
+  }
+
+  $mail->setFrom($mailConfig['setFrom']);
+  $mail->addAddress($mailTo);                              // Add a recipient
+  //$mail->addAddress('ellen@example.com');               // Name is optional
+  $mail->addReplyTo($mailConfig['replyTo']);
+  if($mailCC != ""){
+    $mail->addCC($mailCC);
+  }
+  //$mail->addCC('cc@example.com');
+  //$mail->addBCC('bcc@example.com');
+
+  //$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+  //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+  $mail->isHTML(true);                                  // Set email format to HTML
+
+  $mail->Subject = $mailSubject;
+  $mail->Body    = $mailBody;
+  //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+  if(!$mail->send()){
+    return false;
+  }else{
+    return true;
+  }
+}
 ?>

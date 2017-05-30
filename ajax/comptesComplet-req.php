@@ -43,6 +43,7 @@ if($ldapconn) {
 						"ville"=>getOr($data[$i]["l"][0],""),
 						"bureau"=>getOr($data[$i]["physicaldeliveryofficename"][0],""),
 						"service"=>getOr($data[$i]["department"][0],""),
+						"rpps"=>getOr($data[$i]["rpps"][0],""),
 						"useraccountcontrol"=>getOr($data[$i]["useraccountcontrol"][0],"")
   				));
         }
@@ -71,7 +72,7 @@ if($ldapconn) {
 					<th>Telephone</th>
 					<th>Mobile</th>
 					<th>Fax</th>
-					<th>UsrControl</th>
+					<th>RPPS</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -97,7 +98,7 @@ if($ldapconn) {
 			echo("<td>".$adlist[$row]['telephone']."</td>");
 			echo("<td>".$adlist[$row]['mobile']."</td>");
 			echo("<td>".$adlist[$row]['fax']."</td>");
-			echo("<td>".$adlist[$row]['useraccountcontrol']."</td>");
+			echo("<td>".$adlist[$row]['rpps']."</td>");
 			echo("</tr>");
 		}
 		echo("</tbody></table>");

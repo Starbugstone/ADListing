@@ -24,7 +24,7 @@ include_once 'php/vars.php';
         <li id="nav2"><a href="groupes.php">Groupes</a></li>
         <?php
         if(CheckIfAdmin() || CheckIfRH()){
-          echo '<li id="nav3"><a href="desactiver.php">Desactiver</a></li>';
+          echo '<li id="nav3"><a href="desactiver.php">Comptes désactivés</a></li>';
         }
         ?>
         <li id="nav4"><a href="tableauComplet.php">Tableau detail</a></li>

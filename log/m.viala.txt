@@ -1,6 +1,0 @@
- ---SelfUpdate---
-Compte m.viala modifier par m.viala le 2016-12-05 14:58:22
-cle mise a jour :telephonenumber=>05.65.58.45.70
-Ancien Valeur=>Aucun telephone
-cle mise a jour :facsimiletelephonenumber=>05.65.42.23.82
-Ancien Valeur=>Aucun Fax

@@ -196,6 +196,8 @@ if($ldapconn) {
 
           }
           // fin zone admin -----------------------------------------------
+
+          echo('<p><a href="carteVisite.php?id='.$samaccountname.'" id="carteVisite" target="_blank" class="btn btn-primary" >Imprimer carte de visite</a></p>');
           ?>
         </div>
       </div>
@@ -260,19 +262,6 @@ if($ldapconn) {
 
           <div id="GestionaireDe"><i class='fa fa-spinner fa-pulse'></i></div>
 
-          <?php
-          /*if($directReports!=$directReportsError AND count($directReports)>0 ){
-            echo("<p><b>Gestionnaire de&nbsp;:</b></p><ul class='colaboList'>");
-            foreach( $directReports as $colabo) {
-              //Get rid of all the excess CN and OU
-              if (blacklistedDistinguishedname($colabo,$refusedOU) == FALSE){
-                $colaboName = explodeCN($colabo);
-                echo ("<li><a href=\"detailCompte.php?dn=".removeAccents($colabo)."\">".$colaboName."</a></li>");
-              }
-            }
-            echo("</ul>");
-          }*/
-          ?>
 
           <div id="GestionGroupes"><i class='fa fa-spinner fa-pulse'></i></div>
         </div>

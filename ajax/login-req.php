@@ -105,7 +105,7 @@ if ( isset($_POST['sAMAccountName']) ) {
       }
 
     }
-    $logPath = $logFolder.$sam.'-Login.txt';
+    $logPath = $logFolder.'-Login-'.$sam.'.txt';
     $modifiedLogTitle = $connexionLogMessage.'Compte '.$sam.' connecté le '.date("Y-m-d H:i:s")."\r\n";
     file_put_contents($logPath,$modifiedLogTitle,FILE_APPEND);
   }

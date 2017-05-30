@@ -1,6 +1,0 @@
- ---SelfUpdate---
-Compte raynal modifier par raynal le 2016-12-06 16:02:04
-cle mise a jour :telephonenumber=>0672961195
-Ancien Valeur=>Aucun telephone
-cle mise a jour :mobile=>0672961195
-Ancien Valeur=>Aucun mobile

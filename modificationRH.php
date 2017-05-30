@@ -69,10 +69,10 @@ if($ldapconn) {
     //1st pannel
     if (isset($data[0]['thumbnailphoto'][0])){
       $thumbnailRaw = $data[0]['thumbnailphoto'][0];
-      $thumbnailImg = '<img class="thumb" src="data:image/jpeg;base64,'. base64_encode($thumbnailRaw).'" /><br>';
+      $thumbnailImg = '<img class="thumb" id="thumbnailImg" src="data:image/jpeg;base64,'. base64_encode($thumbnailRaw).'" /><br>';
     }else{
       $thumbnailRaw='';
-      $thumbnailImg='<img class="thumb" src="img/user-icon.png" /><br>';
+      $thumbnailImg='<img class="thumb" id="thumbnailImg" src="img/user-icon.png" /><br>';
     }
     $displayName = getOr($data[0]['displayname'][0], "");
     $samaccountname = getOr($data[0]['samaccountname'][0], "");
@@ -114,7 +114,7 @@ if($ldapconn) {
     $office = getOr($data[0]['physicaldeliveryofficename'][0],"");
     $ville = getOr($data[0]['l'][0],"");
     $useraccountcontrol=$data[0]["useraccountcontrol"][0];
-    $memberOf = $data[0]['memberof'];
+    $memberOf = getOr($data[0]['memberof'],"");
     if (accountIsNotActive($useraccountcontrol)){
       $accountState = "<p id='accountStateIcon'><span class='glyphicon glyphicon-warning-sign secIcon'></span>Compte Desactive</p>";
       $desactivateButtonText = "Activer le compte";
@@ -153,6 +153,7 @@ if($ldapconn) {
 <![endif]-->
 
 <?php include 'favicon.php'; ?>
+<link href="css/toastr.min.css" rel="stylesheet">
 <link href="css/ripple.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
 <link href="css/print.css" rel="stylesheet">
@@ -160,6 +161,17 @@ if($ldapconn) {
 <body>
 <?php include 'navBar.php'; ?>
 
+<div id="changePhotoPopup" style="display:none;">
+  <form id="uploadPhoto" action="ajax/uploadADPhoto-req.php" method="post" enctype="multipart/form-data">
+    <label>Choisir un fichier image (jpg, gif ou png):</label>
+    <input name="userImage" type="file" id="userImage" accept=".png,.jpg,.gif">
+    <input type="text" class="form-control hidden" id="samaccountnamePhoto-hidden" name="samaccountnamePhoto"  value="<?php echo $samaccountname; ?>">
+    <input type="submit" value="Mettre à jour" class="btnSubmit" />
+  </form>
+  <button type="button" id="changePhotoPopupClose" class="close" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 
 <div class="container-fluid text-center">
   <form id="AdUpdateForm">
@@ -172,12 +184,11 @@ if($ldapconn) {
         </div>
         <div class="panel-body panelIcons">
           <?php
-          echo('<div id="accountState">');
-          echo $accountState;
-          echo('</div>');
+
           echo $thumbnailImg;
           ?>
-          <p>Changer Photo(non implementer)</p>
+          <p class="center"><a href="#" id="changePhoto">Changer Photo</a></p>
+
           <div class="form-group row RHEditRow"><label for="samaccountname-text" class="col-sm-2 col-form-label editRHLabel">Login</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="samaccountname-text" >'.$samaccountname.'</p>');?></div></div>
           <div class="form-group row RHEditRow hidden"><label for="samaccountname" class="col-sm-2 col-form-label editRHLabel">Nom</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="samaccountname-hidden" name="samaccountname"  value="'.$samaccountname.'">');?></div></div>
           <div class="form-group row RHEditRow"><label for="nom" class="col-sm-2 col-form-label editRHLabel">Nom</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="sn" name="sn"  value="'.$nom.'">');?></div></div>
@@ -212,7 +223,11 @@ if($ldapconn) {
           <div class="form-group row RHEditRow"><label for="Mobile" class="col-sm-2 col-form-label editRHLabel">Mobile</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="mobile" name="mobile" value="'.$mobile.'">');?></div></div>
           <div class="form-group row RHEditRow"><label for="Fax" class="col-sm-2 col-form-label editRHLabel">Fax</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="facsimiletelephonenumber" name="facsimiletelephonenumber" value="'.$fax.'">');?></div></div>
           <div class="form-group row RHEditRow"><label for="Societe" class="col-sm-2 col-form-label editRHLabel">Societe</label> <div class="col-sm-10"><?php echo('<input type="text" class="form-control" id="company" name="company" value="'.$company.'">');?></div></div>
-          <div class="form-group row RHEditRow"><label for="Gestionnaire" class="col-sm-2 col-form-label editRHLabel">Gestionnaire</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="Gestionnaire" >'.$manager.'</p>');?></div></div>
+          <!--<div class="form-group row RHEditRow"><label for="Gestionnaire" class="col-sm-2 col-form-label editRHLabel">Gestionnaire</label> <div class="col-sm-10"><?php echo('<p class="form-control-static mb-0 noBorder" id="Gestionnaire" >'.$manager.'</p>');?></div></div>
+          -->
+          <div class="form-group row RHEditRow"><label for="Gestionnaire" class="col-sm-2 col-form-label editRHLabel">Gestionnaire</label> <div class="col-sm-10" id="listOfUsers">
+            <i class='fa fa-spinner fa-pulse'></i>
+          </div></div>
 
         </div>
       </div>
@@ -225,22 +240,56 @@ if($ldapconn) {
   <?php
 
   //check if the account can be disactivated
-  if (!in_array($nonDisactivatableAccountGroup,$memberOf)){
-    echo('<a href="#" type="submit" class="btn btn-primary '.$desactivateButtonClass.'" name="btn-desactivate" id="btn-desactivate" data-isactive="'.$dataActive.'" data-useraccountcontrol="'.$useraccountcontrol.'" data-samaccountname="'.$samaccountname.'">'.$desactivateButtonText.'</a>');
+  $disactivateLink = '<a href="#" type="submit" class="btn btn-primary '.$desactivateButtonClass.'" name="btn-desactivate" id="btn-desactivate" data-isactive="'.$dataActive.'" data-useraccountcontrol="'.$useraccountcontrol.'" data-samaccountname="'.$samaccountname.'">'.$desactivateButtonText.'</a>';
+  if(isset($memberOf) && $memberOf != ""){
+    if (!in_array($nonDisactivatableAccountGroup,$memberOf)){
+      echo($disactivateLink);
+    }
+  }else{
+    echo($disactivateLink);
   }
+  echo('<a href="detailCompte.php?id='.$samaccountname.'" class="btn btn-primary" style="margin-left:4px;">Retour fiche utilisateur</a>');
   ?>
+
   </form>
+  <?php
+  echo('<div id="accountState">');
+  echo $accountState;
+  echo('</div>');
+  ?>
 </div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="js/jquery-2.2.4.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/toastr.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/script.js"></script>
 <script>
+//set toastr options
+toastr.options = {
+  "closeButton": true,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": true,
+  "positionClass": "toast-bottom-right",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
 //Update AD ajax request
 function submitUpdate(){
+
   var $data = $("#AdUpdateForm").serialize();
+
   //console.log($data);
   var $response = null;
 
@@ -262,20 +311,62 @@ function submitUpdate(){
       console.log($response);
       //check state, modify logon pannel then hide and show loggedin pannel
       if ($response.state){
-        $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Ok ...');
+        $("#btn-updateAD").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Mettre a jour ...');
         //window.location.reload();
         //Add class to updated elements
         for($i=0;$i<$response.updatedKeys.length;++$i){
           var $updatedID = "#"+$response.updatedKeys[$i];
-          $($updatedID).addClass('updated');
+          $($updatedID).addClass('updated',200); //annimation effect added by jquery-ui
+          $($updatedID).addClass('updatedBorder',200);
+          $($updatedID).removeClass('updated',1500);
+          toastr["success"]($response.updatedKeys[$i], "Champ mis a jour");
         }
-
+        if($response.emailSend){
+          toastr["success"]("email envoyé à "+$response.emailSendMail, "Envoi mail");
+        }else{
+          toastr["error"]("erreur d'envoi mail", "Envoi mail");
+        }
 
 
       }else{
         //set error
         $("#btn-updateAD").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; erreur ...');
         console.log($response.error);
+      }
+    }
+  });
+  return false;
+}
+
+function submitPhoto($data){
+
+  //console.log($data);
+  var $response = null;
+
+  //ajax call
+  $.ajax({
+    type : 'POST',
+    url : 'ajax/uploadADPhoto-req.php',
+    data : $data,
+    contentType: false,       // The content type used when sending data to the server.
+    cache: false,             // To unable request pages to be cached
+    processData:false,        // To send DOMDocument or non processed data file it is set to false
+    success : function ($responseJSON){
+      $response = jQuery.parseJSON($responseJSON);
+
+      console.log($response);
+      if ($response.state){
+        var $reponseImg = '<img class="thumb" src="data:image/jpeg;base64,'+$response['base64img']+'" />';
+        toastr["success"]($reponseImg, "Photo Mis a jour");
+        if($response.emailSend){
+          toastr["success"]("email envoyé à "+$response.emailSendMail, "Envoi mail");
+        }else{
+          toastr["error"]("erreur d'envoi mail", "Envoi mail");
+        }
+        $("#thumbnailImg").attr("src","data:image/jpeg;base64,"+$response['base64img']);
+        $("#changePhotoPopup").slideToggle("slow");
+      }else{
+        toastr["error"]($response.error, "Erreur");
       }
     }
   });
@@ -304,16 +395,22 @@ function changeAccountState($isActive,$samaccountname){
           $("#accountStateIcon").removeClass("show");
           $("#btn-desactivate").addClass("DesactivateAccount");
           $("#btn-desactivate").removeClass("ActivateAccount");
-          $("#btn-desactivate").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Activé');
-          console.log("activated");
+          $("#btn-desactivate").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Desactiver le compte');
+          //console.log("activated");
+          toastr["warning"]("le compte <?php echo($displayName); ?> est activé", "Compte activé");
         }else{
           $("#accountStateIcon").removeClass("hidden");
           $("#accountStateIcon").addClass("show");
           $("#btn-desactivate").removeClass("DesactivateAccount");
           $("#btn-desactivate").addClass("ActivateAccount");
-          $("#btn-desactivate").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Desactivé');
+          $("#btn-desactivate").html('<i class="fa fa-user" aria-hidden="true"></i> &nbsp; Reactiver le compte');
+          toastr["warning"]("le compte <?php echo($displayName); ?> est desactivé", "Compte desactivé");
         }
-
+        if($response.emailSend){
+          toastr["success"]("email envoyé à <?php echo($alertMailForDisactivation); ?>", "Envoi mail");
+        }else{
+          toastr["error"]("erreur d'envoi mail", "Envoi mail");
+        }
       }else{
         //set error
         $("#btn-desactivate").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp; erreur ...');
@@ -332,26 +429,42 @@ $("#btn-desactivate").click(function(){
 
 // Dynamic update of Name Surname.
 function updateNomPrenom(){
-  var $nom = $("#nom").val();
-  var $prenom = $("#prenom").val();
-  $("#nomPrenom").val($nom+' '+$prenom);
+  var $nom = $("#sn").val();
+  var $prenom = $("#givenname").val();
+  $("#displayname").val($nom+' '+$prenom);
+  console.log("updateNomPrenom");
 }
 
 $(document).ready(function() {
+  //get list of users via ajax
+  $("#listOfUsers").load("ajax/listOfUsersOptions-req.php?manager=<?php echo(rawurlencode($managerDn)); ?>");
   //update
   $("#AdUpdateForm").submit(function(e){
     submitUpdate();
     e.preventDefault();
   });
 
+  $("#uploadPhoto").on('submit',(function(e){
+    var $data = new FormData(this);
+    submitPhoto($data);
+    e.preventDefault();
+  }));
+
+  $("#changePhoto").click(function(e){
+    //e.preventDefault();
+    $("#changePhotoPopup").slideToggle("slow");
+  });
+
+  $("#changePhotoPopupClose").click(function(e){
+    $("#changePhotoPopup").slideToggle("slow");
+  });
+
   //modifier nomPrenom
-  var $nom = $("#nom").val();
-  var $prenom = $("prenom").val();
-  $("#nom").keyup(function(){
+  $("#sn").keyup(function(){
     updateNomPrenom();
   });
 
-  $("#prenom").keyup(function(){
+  $("#givenname").keyup(function(){
     updateNomPrenom();
   });
 
